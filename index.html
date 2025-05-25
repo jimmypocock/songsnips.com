@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loop Practice Assistant - Educational Music Practice Tool</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 800px;
+      width: 100%;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .video-section {
+      margin-bottom: 30px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: white;
+    }
+
+    .btn-primary {
+      background: #667eea;
+    }
+
+    .btn-primary:hover {
+      background: #5a67d8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .player-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      /* 16:9 */
+      height: 0;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .player-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .controls {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .control-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .control-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .time-display {
+      display: inline-block;
+      min-width: 60px;
+      padding: 8px 12px;
+      background: white;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 14px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .btn-control {
+      background: #48bb78;
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+
+    .btn-control:hover {
+      background: #38a169;
+    }
+
+    .btn-stop {
+      background: #f56565;
+    }
+
+    .btn-stop:hover {
+      background: #e53e3e;
+    }
+
+    .btn-loop {
+      background: #ed8936;
+    }
+
+    .btn-loop:hover {
+      background: #dd6b20;
+    }
+
+    .btn-loop.active {
+      background: #38a169;
+    }
+
+    .progress-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
+
+    .timeline-container {
+      position: relative;
+      height: 60px;
+      background: #e0e0e0;
+      border-radius: 30px;
+      cursor: pointer;
+      margin-bottom: 15px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #667eea;
+      width: 0%;
+      border-radius: 30px;
+      transition: width 0.1s linear;
+    }
+
+    .loop-region {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      background: rgba(72, 187, 120, 0.3);
+      border-radius: 30px;
+    }
+
+    .loop-handle {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 40px;
+      background: #48bb78;
+      border: 3px solid white;
+      border-radius: 12px;
+      cursor: ew-resize;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      z-index: 10;
+      transition: transform 0.2s;
+    }
+
+    .loop-handle:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .loop-handle.start::before {
+      content: '[';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .loop-handle.end::before {
+      content: ']';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .time-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .loop-info {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .loop-time {
+      font-weight: bold;
+      color: #48bb78;
+    }
+
+    .instructions {
+      background: #f7fafc;
+      border-left: 4px solid #667eea;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+
+    .instructions h3 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .instructions ol {
+      margin-left: 20px;
+      line-height: 1.8;
+    }
+
+    .error-message {
+      background: #fed7d7;
+      color: #c53030;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .success-message {
+      background: #c6f6d5;
+      color: #276749;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    code {
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      .control-row {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🎵 Loop Practice Assistant</h1>
+    <p class="subtitle">Master any song section with smart looping</p>
+
+    <div class="error-message" id="errorMessage"></div>
+    <div class="success-message" id="successMessage"></div>
+
+    <div class="video-section">
+      <div class="input-group">
+        <input type="text" id="videoUrl" placeholder="Paste YouTube URL here (e.g., https://youtube.com/watch?v=...)" />
+        <button class="btn-primary" onclick="loadVideo()">Load Video</button>
+      </div>
+
+      <div style="text-align: center; margin-bottom: 10px;">
+        <button class="btn-control" style="font-size: 12px; padding: 8px 16px;" onclick="loadTestVideo()">Load Test
+          Video</button>
+        <span style="font-size: 12px; color: #666; margin-left: 10px;">Try this if you're having trouble</span>
+      </div>
+
+      <div class="player-wrapper">
+        <div id="player"
+          style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f0f0f0; color: #666; text-align: center; padding: 20px;">
+          <div>
+            <p style="margin-bottom: 10px;">🎵 Loading YouTube Player...</p>
+            <p style="font-size: 12px;">This may take a moment on first load</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="time-info">
+        <span id="currentTime">0:00</span>
+        <span id="duration">0:00</span>
+      </div>
+
+      <div class="timeline-container" id="timeline">
+        <div class="progress-fill" id="progressFill"></div>
+        <div class="loop-region" id="loopRegion" style="display: none;"></div>
+        <div class="loop-handle start" id="loopStartHandle" style="display: none;"></div>
+        <div class="loop-handle end" id="loopEndHandle" style="display: none;"></div>
+      </div>
+
+      <div class="loop-info">
+        Loop: <span class="loop-time" id="loopStartDisplay">Click timeline</span> → <span class="loop-time"
+          id="loopEndDisplay">to set loop</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="control-row">
+        <button class="btn-loop" id="loopToggle" onclick="toggleLoop()">Enable Loop</button>
+        <button class="btn-control" onclick="playPause()">Play/Pause</button>
+        <button class="btn-stop" onclick="stopPlayback()">Stop</button>
+        <button class="btn-control" onclick="clearLoop()">Clear Loop</button>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <h3>How to Use:</h3>
+      <ol>
+        <li>Paste any YouTube URL and click "Load Video"</li>
+        <li>Click anywhere on the timeline to set the loop start point</li>
+        <li>Click again to set the loop end point</li>
+        <li>Drag the green handles to fine-tune your loop</li>
+        <li>Click "Enable Loop" to start practicing!</li>
+      </ol>
+      <p style="margin-top: 15px; font-size: 14px; color: #666;">
+        <strong>Tip:</strong> The Stop button returns you to the loop start for quick practice resets.
+        <br><strong>Note:</strong> There may be a brief pause when the video loops back - this is normal.
+      </p>
+      <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px;">
+        <strong style="color: #856404;">⚠️ Important:</strong> If videos won't load, make sure you're not opening this
+        file directly (file://).
+        <br>You need to either:
+        <ul style="margin: 10px 0 0 20px; color: #856404;">
+          <li>Upload it to a web server, or</li>
+          <li>Use a local server (Python: <code>python -m http.server 8000</code>)</li>
+          <li>Try the "Load Test Video" button first to verify it's working</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // YouTube IFrame API
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // Global variables
+    let player;
+    let playerReady = false;
+    let loopStart = null;
+    let loopEnd = null;
+    let isLooping = false;
+    let updateInterval;
+    let duration = 0;
+    let pendingVideoId = null;
+    let hasShownLoadSuccess = false;
+    let isDragging = false;
+    let dragHandle = null;
+
+    // Initialize YouTube player
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '100%',
+        width: '100%',
+        videoId: '', // Start with no video
+        playerVars: {
+          'controls': 1,
+          'modestbranding': 1,
+          'rel': 0,
+          'autoplay': 0
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange,
+          'onError': onPlayerError
+        }
+      });
+    }
+
+    function onPlayerReady(event) {
+      // Player is ready
+      playerReady = true;
+
+      // Show ready message
+      showSuccess("Player ready! Paste a YouTube URL above to get started.");
+
+      // If there's a pending video, load it now
+      if (pendingVideoId) {
+        player.loadVideoById(pendingVideoId);
+        pendingVideoId = null;
+      }
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data == YT.PlayerState.PLAYING) {
+        duration = player.getDuration();
+        document.getElementById('duration').textContent = formatTime(duration);
+        startUpdateInterval();
+
+        // Show success message only once per video load
+        if (!hasShownLoadSuccess && document.getElementById('videoUrl').value.trim() !== '') {
+          showSuccess("Video loaded successfully! Click on the timeline to set your loop points.");
+          hasShownLoadSuccess = true;
+        }
+      } else if (event.data == YT.PlayerState.CUED) {
+        // Reset the flag when a new video is cued
+        hasShownLoadSuccess = false;
+      } else {
+        stopUpdateInterval();
+      }
+    }
+
+    function onPlayerError(event) {
+      // Only show error if user has tried to load a video
+      if (document.getElementById('videoUrl').value.trim() !== '') {
+        let errorMessage = "Error loading video. ";
+
+        // Provide specific error messages based on error code
+        switch (event.data) {
+          case 2:
+            errorMessage += "Invalid video ID. Please check the URL.";
+            break;
+          case 5:
+            errorMessage += "This video cannot be played in embedded players.";
+            break;
+          case 100:
+            errorMessage += "This video was not found or is private.";
+            break;
+          case 101:
+          case 150:
+            errorMessage += "The video owner doesn't allow embedded playback.";
+            break;
+          default:
+            errorMessage += "Please check the URL and try again.";
+        }
+
+        showError(errorMessage);
+      }
+    }
+
+    // Load video from URL
+    function loadVideo() {
+      const urlInput = document.getElementById('videoUrl').value;
+      const videoId = extractVideoId(urlInput);
+
+      // Clear any existing messages
+      hideError();
+      hideSuccess();
+
+      if (videoId) {
+        if (playerReady && player && player.loadVideoById) {
+          hasShownLoadSuccess = false;
+          player.loadVideoById(videoId);
+          clearLoop();
+        } else {
+          // Player not ready yet, store the video ID to load when ready
+          pendingVideoId = videoId;
+          showError("Player is initializing... Please try again in a moment.");
+
+          // Try again after a short delay
+          setTimeout(() => {
+            if (playerReady && player && player.loadVideoById) {
+              hasShownLoadSuccess = false;
+              player.loadVideoById(pendingVideoId || videoId);
+              pendingVideoId = null;
+              hideError();
+              clearLoop();
+            }
+          }, 1000);
+        }
+      } else {
+        showError("Please enter a valid YouTube URL");
+      }
+    }
+
+    // Extract video ID from YouTube URL
+    function extractVideoId(url) {
+      const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/;
+      const match = url.match(regex);
+      return match ? match[1] : null;
+    }
+
+    // Update progress and check loop
+    function startUpdateInterval() {
+      updateInterval = setInterval(() => {
+        if (player && playerReady && player.getCurrentTime) {
+          const currentTime = player.getCurrentTime();
+          updateProgress(currentTime);
+
+          // Check if we need to loop
+          if (isLooping && loopEnd !== null && currentTime >= loopEnd) {
+            player.seekTo(loopStart || 0);
+          }
+        }
+      }, 100);
+    }
+
+    function stopUpdateInterval() {
+      if (updateInterval) {
+        clearInterval(updateInterval);
+      }
+    }
+
+    // Update progress bar and time display
+    function updateProgress(currentTime) {
+      if (duration > 0) {
+        const progressPercent = (currentTime / duration) * 100;
+        document.getElementById('progressFill').style.width = progressPercent + '%';
+        document.getElementById('currentTime').textContent = formatTime(currentTime);
+      }
+    }
+
+    // Timeline interaction
+    document.getElementById('timeline').addEventListener('click', function (e) {
+      if (!playerReady || !duration || isDragging) return;
+
+      const rect = this.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const percentage = x / rect.width;
+      const clickTime = percentage * duration;
+
+      // If no loop points set, set start
+      if (loopStart === null) {
+        setLoopPoint('start', clickTime);
+      }
+      // If start is set but not end, set end
+      else if (loopEnd === null) {
+        if (clickTime > loopStart) {
+          setLoopPoint('end', clickTime);
+        } else {
+          // If clicked before start, reset start
+          setLoopPoint('start', clickTime);
+        }
+      }
+      // If both are set, determine which to update based on proximity
+      else {
+        const distToStart = Math.abs(clickTime - loopStart);
+        const distToEnd = Math.abs(clickTime - loopEnd);
+
+        if (distToStart < distToEnd) {
+          setLoopPoint('start', clickTime);
+        } else {
+          setLoopPoint('end', clickTime);
+        }
+      }
+
+      // Seek to the clicked position
+      if (player && player.seekTo) {
+        player.seekTo(clickTime);
+      }
+    });
+
+    // Set loop point
+    function setLoopPoint(type, time) {
+      if (type === 'start') {
+        loopStart = time;
+        document.getElementById('loopStartDisplay').textContent = formatTime(time);
+
+        // If end is before start, clear end
+        if (loopEnd !== null && loopEnd <= loopStart) {
+          loopEnd = null;
+          document.getElementById('loopEndDisplay').textContent = 'to set loop';
+        }
+      } else {
+        loopEnd = time;
+        document.getElementById('loopEndDisplay').textContent = formatTime(time);
+      }
+
+      updateLoopVisuals();
+
+      // Auto-enable loop if both points are set
+      if (loopStart !== null && loopEnd !== null && !isLooping) {
+        enableLoop();
+      }
+    }
+
+    // Update loop visual elements
+    function updateLoopVisuals() {
+      const timeline = document.getElementById('timeline');
+      const loopRegion = document.getElementById('loopRegion');
+      const startHandle = document.getElementById('loopStartHandle');
+      const endHandle = document.getElementById('loopEndHandle');
+
+      if (loopStart !== null && duration > 0) {
+        const startPercent = (loopStart / duration) * 100;
+        startHandle.style.left = startPercent + '%';
+        startHandle.style.display = 'block';
+
+        if (loopEnd !== null) {
+          const endPercent = (loopEnd / duration) * 100;
+          const widthPercent = endPercent - startPercent;
+
+          loopRegion.style.left = startPercent + '%';
+          loopRegion.style.width = widthPercent + '%';
+          loopRegion.style.display = 'block';
+
+          endHandle.style.left = endPercent + '%';
+          endHandle.style.display = 'block';
+        }
+      }
+    }
+
+    // Handle dragging
+    document.getElementById('loopStartHandle').addEventListener('mousedown', function (e) {
+      isDragging = true;
+      dragHandle = 'start';
+      e.preventDefault();
+    });
+
+    document.getElementById('loopEndHandle').addEventListener('mousedown', function (e) {
+      isDragging = true;
+      dragHandle = 'end';
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (!isDragging || !dragHandle) return;
+
+      const timeline = document.getElementById('timeline');
+      const rect = timeline.getBoundingClientRect();
+      const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+      const percentage = x / rect.width;
+      const time = percentage * duration;
+
+      if (dragHandle === 'start' && (loopEnd === null || time < loopEnd)) {
+        setLoopPoint('start', time);
+      } else if (dragHandle === 'end' && time > loopStart) {
+        setLoopPoint('end', time);
+      }
+    });
+
+    document.addEventListener('mouseup', function () {
+      isDragging = false;
+      dragHandle = null;
+    });
+
+    // Control functions
+    function toggleLoop() {
+      if (loopStart !== null && loopEnd !== null) {
+        isLooping = !isLooping;
+        const btn = document.getElementById('loopToggle');
+        if (isLooping) {
+          btn.classList.add('active');
+          btn.textContent = 'Disable Loop';
+
+          // Jump to loop start when enabling
+          if (player && player.seekTo) {
+            player.seekTo(loopStart);
+          }
+        } else {
+          btn.classList.remove('active');
+          btn.textContent = 'Enable Loop';
+        }
+        hideError();
+      } else {
+        showError("Please set both loop points first by clicking on the timeline");
+      }
+    }
+
+    function enableLoop() {
+      isLooping = true;
+      const btn = document.getElementById('loopToggle');
+      btn.classList.add('active');
+      btn.textContent = 'Disable Loop';
+    }
+
+    function clearLoop() {
+      loopStart = null;
+      loopEnd = null;
+      isLooping = false;
+      document.getElementById('loopStartDisplay').textContent = 'Click timeline';
+      document.getElementById('loopEndDisplay').textContent = 'to set loop';
+      document.getElementById('loopToggle').classList.remove('active');
+      document.getElementById('loopToggle').textContent = 'Enable Loop';
+      document.getElementById('loopRegion').style.display = 'none';
+      document.getElementById('loopStartHandle').style.display = 'none';
+      document.getElementById('loopEndHandle').style.display = 'none';
+    }
+
+    function playPause() {
+      if (player && playerReady && player.getPlayerState) {
+        const state = player.getPlayerState();
+        if (state === YT.PlayerState.PLAYING) {
+          player.pauseVideo();
+        } else {
+          player.playVideo();
+        }
+      }
+    }
+
+    function stopPlayback() {
+      if (player && playerReady) {
+        player.pauseVideo();
+
+        // Go to loop start if set, otherwise go to beginning
+        const seekTime = loopStart !== null ? loopStart : 0;
+        player.seekTo(seekTime);
+      }
+    }
+
+    // Utility functions
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function showError(message) {
+      const errorEl = document.getElementById('errorMessage');
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+      hideSuccess();
+    }
+
+    function hideError() {
+      document.getElementById('errorMessage').style.display = 'none';
+    }
+
+    function showSuccess(message) {
+      const successEl = document.getElementById('successMessage');
+      successEl.textContent = message;
+      successEl.style.display = 'block';
+      hideError();
+    }
+
+    function hideSuccess() {
+      document.getElementById('successMessage').style.display = 'none';
+    }
+
+    // Load a test video that we know works
+    function loadTestVideo() {
+      const testUrl = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
+      document.getElementById('videoUrl').value = testUrl;
+      loadVideo();
+    }
+
+    // Allow Enter key to load video
+    document.getElementById('videoUrl').addEventListener('keypress', function (event) {
+      if (event.key === 'Enter') {
+        loadVideo();
+      }
+    });
+
+    // Check if running from file:// protocol
+    window.addEventListener('load', function () {
+      if (window.location.protocol === 'file:') {
+        showError('⚠️ This app must be served over HTTP/HTTPS. Please use a web server or upload the file online. YouTube\'s API doesn\'t work with file:// URLs.');
+      }
+    });
+  </script>
+</body>
+
+</html>
