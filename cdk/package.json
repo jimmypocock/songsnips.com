@@ -1,0 +1,26 @@
+{
+  "name": "nextjs-aws-template-infrastructure",
+  "version": "1.0.0",
+  "description": "CDK infrastructure for NextJS AWS Template",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "deploy": "./deploy.sh",
+    "destroy": "cdk destroy --all",
+    "diff": "npm run build && cdk diff",
+    "synth": "npm run build && cdk synth",
+    "validate": "npm run build && npx ts-node --prefer-ts-exts src/validate-stacks.ts",
+    "predeploy": "npm run validate"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.5",
+    "aws-cdk": "^2.1016.1",
+    "typescript": "~5.3.3"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.198.0",
+    "constructs": "^10.0.0"
+  }
+}

@@ -1,0 +1,483 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables */
+:root {
+  --font-ui: var(--font-noto-sans), "Segoe UI", "Arial Unicode MS", system-ui, sans-serif;
+  --font-mono: "Courier New", "DejaVu Sans Mono", monospace;
+
+  /* Font sizes for better readability */
+  --text-xs: 0.75rem;  /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem;   /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem;  /* 20px */
+  --text-2xl: 1.5rem;  /* 24px */
+  --text-3xl: 2rem;    /* 32px */
+}
+
+/* Light mode colors (default) */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafbfc;
+  --bg-accent: #f6f8fa;
+  --text-primary: #0e1117;
+  --text-secondary: #31333e;
+  --text-accent: #808495;
+  --border-color: #e0e2e9;
+  --border-focus: #f77f00;
+
+  /*
+   * RETRO COLOR PALETTE
+   * A vibrant retro-inspired color scheme
+   *
+   * Primary: #f77f00 (Vibrant Orange) - Main brand color, energetic and warm
+   * Secondary: #012f49 (Deep Navy) - Professional depth and contrast
+   * Accent: #fcc04a (Golden Yellow) - Highlights and call-to-actions
+   * Danger: #d62729 (Deep Red) - Alerts and important actions
+   * Neutral: #e9e2b6 (Cream) - Soft backgrounds and subtle elements
+   */
+
+  /* Brand colors */
+  --primary: #f77f00;      /* Vibrant Orange */
+  --primary-hover: #e06f00;
+  --secondary: #012f49;    /* Deep Navy */
+  --accent: #fcc04a;       /* Golden Yellow */
+  --danger: #d62729;       /* Deep Red */
+  --neutral: #6b7280;      /* Gray for text/borders */
+
+  /* Gradient backgrounds - Retro warm tones */
+  --gradient-bg: radial-gradient(circle at 30% 20%, #fef6e8 0%, #fffbf3 40%, #ffffff 100%);
+  --orb-color: rgba(247, 127, 0, 0.3);
+
+  /* Shadows - Softer for light mode */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.08);
+  --shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Dark mode colors */
+[data-theme="dark"] {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0f0f17;
+  --bg-accent: #1a1a2e;
+  --text-primary: #fafafa;
+  --text-secondary: #e0e0e0;
+  --text-accent: #a3a8b8;
+  --border-color: #2a2a3e;
+  --border-focus: #f77f00;
+
+  /* Brand colors (adjusted for dark mode) */
+  --primary: #f77f00;      /* Vibrant Orange */
+  --primary-hover: #ff8c1a;
+  --secondary: #012f49;    /* Deep Navy */
+  --accent: #fcc04a;       /* Golden Yellow */
+  --danger: #d62729;       /* Deep Red */
+  --neutral: #94a3b8;      /* Lighter gray for dark mode */
+
+  /* Gradient backgrounds - Dark retro theme */
+  --gradient-bg: radial-gradient(circle at 20% 50%, #0f1922 0%, #0a0a0a 50%);
+  --orb-color: rgba(252, 192, 74, 0.4);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Global reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: scroll; /* Force scrollbar to always show */
+  scrollbar-gutter: stable both-edges;
+  background-color: #ffffff;
+}
+
+[data-theme="dark"] html {
+  background-color: #0a0a0a;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--text-primary);
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background: var(--gradient-bg);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  margin-right: calc(100vw - 100%);
+}
+
+/* Next.js specific wrapper div fixes */
+body > div:first-child,
+div#__next,
+div#__next > div {
+  min-height: 100vh;
+}
+
+/* Main app wrapper to handle overflow */
+.app-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Prevent horizontal scroll on root */
+:root {
+  overflow-x: hidden;
+}
+
+/* Gradient background layer */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--gradient-bg);
+  z-index: -10;
+  pointer-events: none;
+}
+
+/* Floating orbs */
+.gradient-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.3;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .gradient-orb {
+  opacity: 0.4;
+}
+
+.orb1 {
+  width: 400px;
+  height: 400px;
+  top: -10%;
+  right: -200px;
+  background: radial-gradient(circle at center, rgba(247, 127, 0, 0.5) 0%, rgba(252, 192, 74, 0.3) 50%, transparent 70%);
+}
+
+[data-theme="dark"] .orb1 {
+  background: radial-gradient(circle at center, rgba(252, 192, 74, 0.6) 0%, rgba(247, 127, 0, 0.4) 50%, transparent 70%);
+}
+
+.orb2 {
+  width: 350px;
+  height: 350px;
+  bottom: -10%;
+  left: -10%;
+  background: radial-gradient(circle at center, rgba(214, 39, 41, 0.5) 0%, rgba(247, 127, 0, 0.3) 50%, transparent 70%);
+}
+
+[data-theme="dark"] .orb2 {
+  background: radial-gradient(circle at center, rgba(214, 39, 41, 0.6) 0%, rgba(252, 192, 74, 0.4) 50%, transparent 70%);
+}
+
+.orb3 {
+  width: 300px;
+  height: 300px;
+  top: 40%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at center, rgba(1, 47, 73, 0.8) 0%, rgba(1, 47, 73, 0.4) 40%, rgba(252, 192, 74, 0.2) 70%, transparent 80%);
+  animation-delay: -5s;
+}
+
+[data-theme="dark"] .orb3 {
+  background: radial-gradient(circle at center, rgba(1, 47, 73, 0.9) 0%, rgba(1, 47, 73, 0.5) 40%, rgba(233, 226, 182, 0.3) 70%, transparent 80%);
+}
+
+/* Additional orb for more effect */
+.gradient-orb.orb4 {
+  width: 250px;
+  height: 250px;
+  bottom: 20%;
+  right: -50px;
+  background: radial-gradient(circle at center, rgba(233, 226, 182, 0.5) 0%, rgba(252, 192, 74, 0.3) 50%, transparent 70%);
+  animation-delay: -15s;
+}
+
+[data-theme="dark"] .orb4 {
+  background: radial-gradient(circle at center, rgba(233, 226, 182, 0.6) 0%, rgba(247, 127, 0, 0.4) 50%, transparent 70%);
+}
+
+/* Simple fade in animation for modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+/* Custom scrollbar - style to match background */
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: var(--bg-primary);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) var(--bg-primary);
+}
+
+[data-theme="dark"] * {
+  scrollbar-color: rgba(255, 255, 255, 0.2) var(--bg-primary);
+}
+
+/* Textarea resize handle */
+textarea {
+  resize: vertical;
+}
+
+/* Mobile-friendly font sizes */
+@media (max-width: 640px) {
+  :root {
+    --text-base: 0.9375rem; /* 15px */
+    --text-lg: 1.0625rem;   /* 17px */
+    --text-xl: 1.1875rem;   /* 19px */
+    --text-2xl: 1.375rem;   /* 22px */
+    --text-3xl: 1.75rem;    /* 28px */
+  }
+}
+
+/* Clean button styling */
+.btn-primary {
+  @apply px-6 py-3 text-white font-medium rounded-lg relative;
+  @apply transition-all duration-100;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply min-h-[48px] min-w-[48px] text-base;
+  background: var(--primary);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Copy button specific styling */
+.btn-copy {
+  @apply absolute top-3 right-3 p-2.5 rounded-lg;
+  @apply transition-all duration-100 transform hover:scale-105;
+  @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-copy:hover {
+  @apply bg-gray-50 dark:bg-gray-700;
+  box-shadow: var(--shadow-md);
+}
+
+/* Responsive typography for headings */
+h1 {
+  @apply text-3xl md:text-4xl lg:text-5xl font-bold;
+}
+
+h2 {
+  @apply text-2xl md:text-3xl font-semibold;
+}
+
+h3 {
+  @apply text-xl md:text-2xl font-semibold;
+}
+
+/* Card backgrounds for gradient compatibility */
+.glass-card {
+  @apply rounded-xl backdrop-blur-md;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-card);
+}
+
+[data-theme="dark"] .glass-card {
+  background: rgba(26, 26, 46, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Input fields with gradient compatibility */
+.input-field {
+  @apply backdrop-blur-sm;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .input-field {
+  background: rgba(10, 10, 10, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Ad container styling */
+.ad-container {
+  @apply rounded-xl overflow-hidden backdrop-blur-sm;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .ad-container {
+  background: rgba(26, 26, 46, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Ensure text selection works everywhere */
+.select-text {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Ensure textareas and inputs support standard selection */
+textarea, input {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Custom styles for SongSnips */
+.border-3 {
+  border-width: 3px;
+}
+
+/* Better mobile responsiveness for timeline */
+@media (max-width: 640px) {
+  .timeline-container {
+    height: 48px;
+  }
+}
+
+/* Improved YouTube player responsiveness */
+.youtube-player-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.youtube-player-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Retro-inspired customizations */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fef6e8;
+  border-radius: 6px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #0f1922;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #fcc04a 0%, #f77f00 100%);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #f77f00 0%, #d62729 100%);
+  background-clip: padding-box;
+}
+
+/* Retro button shadows */
+button {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* Add subtle grain texture to backgrounds */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.03;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px);
+  pointer-events: none;
+  border-radius: inherit;
+}

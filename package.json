@@ -1,0 +1,53 @@
+{
+  "name": "nextjs-aws-template",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A production-ready Next.js template with AWS CDK, Google Analytics, Google AdSense, and Tailwind CSS",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "build:cdk": "cd cdk && rm -f lib/*.d.ts lib/*.js && npm run build",
+    "cdk:install": "cd cdk && npm install",
+    "cdk:synth": "cd cdk && npx cdk synth",
+    "deploy:foundation": "./scripts/deploy-foundation.sh",
+    "deploy:cert": "./scripts/deploy-cert.sh",
+    "deploy:edge": "./scripts/deploy-edge-functions.sh",
+    "deploy:waf": "./scripts/deploy-waf.sh",
+    "deploy:cdn": "./scripts/deploy-cdn.sh --nextjs",
+    "deploy:app": "./scripts/deploy-app-content.sh",
+    "deploy:monitoring": "./scripts/deploy-monitoring.sh",
+    "fix:bucket-policy": "./scripts/fix-bucket-policy.sh",
+    "deploy:all": "./scripts/deploy-all-decoupled.sh --nextjs",
+    "deploy:all:decoupled": "./scripts/deploy-all-decoupled.sh --nextjs",
+    "status": "./scripts/check-stack-status.sh",
+    "status:all": "./scripts/check-all-stacks.sh",
+    "destroy:waf": "./scripts/destroy-waf.sh",
+    "destroy:monitoring": "./scripts/destroy-monitoring.sh",
+    "maintenance:on": "./scripts/maintenance-mode.sh on",
+    "maintenance:off": "./scripts/maintenance-mode.sh off",
+    "maintenance:update": "./scripts/maintenance-mode.sh update",
+    "todo": "./scripts/update-todos.sh show",
+    "todo:add": "./scripts/update-todos.sh add",
+    "todo:complete": "./scripts/update-todos.sh complete",
+    "todo:progress": "./scripts/update-todos.sh progress"
+  },
+  "dependencies": {
+    "next": "^15.3.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.8",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.19.4",
+    "typescript": "^5"
+  }
+}
