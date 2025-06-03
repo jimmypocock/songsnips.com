@@ -6,14 +6,14 @@ export default function HowItWorks() {
       {/* Navigation */}
       <nav className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">
+          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             SongSnips
           </Link>
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">
+            <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-secondary transition-colors font-medium">
               Home
             </Link>
-            <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">
+            <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-secondary transition-colors font-medium">
               About
             </Link>
           </div>
@@ -23,7 +23,7 @@ export default function HowItWorks() {
       {/* Main Content */}
       <main className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-20">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent mb-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-8 text-center">
             How It Works
           </h1>
 
@@ -31,7 +31,7 @@ export default function HowItWorks() {
             {/* Step 1 */}
             <div className="glass-card p-8 rounded-2xl">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="flex-shrink-0 w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-xl">
                   1
                 </div>
                 <div className="flex-1">
@@ -42,7 +42,7 @@ export default function HowItWorks() {
                     Simply paste any YouTube URL into the input field and click "Load Video". SongSnips will instantly load the video in our player.
                   </p>
                   <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-                    <code className="text-sm text-orange-600 dark:text-yellow-400">
+                    <code className="text-sm text-secondary dark:text-secondary">
                       https://youtube.com/watch?v=your-video-id
                     </code>
                   </div>
@@ -53,7 +53,7 @@ export default function HowItWorks() {
             {/* Step 2 */}
             <div className="glass-card p-8 rounded-2xl">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="flex-shrink-0 w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-xl">
                   2
                 </div>
                 <div className="flex-1">
@@ -77,7 +77,7 @@ export default function HowItWorks() {
             {/* Step 3 */}
             <div className="glass-card p-8 rounded-2xl">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="flex-shrink-0 w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-xl">
                   3
                 </div>
                 <div className="flex-1">
@@ -94,7 +94,7 @@ export default function HowItWorks() {
             {/* Step 4 */}
             <div className="glass-card p-8 rounded-2xl">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="flex-shrink-0 w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-xl">
                   4
                 </div>
                 <div className="flex-1">
@@ -109,25 +109,25 @@ export default function HowItWorks() {
             </div>
 
             {/* Tips Section */}
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-orange-500 p-6 rounded-lg mt-12">
-              <h3 className="text-lg font-semibold text-orange-800 dark:text-yellow-300 mb-3">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary p-6 rounded-lg mt-12">
+              <h3 className="text-lg font-semibold text-primary dark:text-accent mb-3">
                 Pro Tips
               </h3>
               <ul className="space-y-2 text-gray-700 dark:text-gray-300">
                 <li className="flex items-start gap-2">
-                  <span className="text-orange-500">•</span>
+                  <span className="text-secondary">•</span>
                   <span>Use keyboard shortcuts: Space to play/pause, Arrow keys to seek</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-orange-500">•</span>
+                  <span className="text-secondary">•</span>
                   <span>The timeline shows your current position in real-time</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-orange-500">•</span>
+                  <span className="text-secondary">•</span>
                   <span>Clear your loop anytime to set new practice sections</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-orange-500">•</span>
+                  <span className="text-secondary">•</span>
                   <span>Works great for music practice, language learning, and tutorials</span>
                 </li>
               </ul>
@@ -176,10 +176,10 @@ export default function HowItWorks() {
               </p>
             </div>
             <div className="flex gap-6">
-              <Link href="/privacy" className="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">
+              <Link href="/privacy" className="text-gray-600 dark:text-gray-400 hover:text-secondary dark:hover:text-secondary transition-colors">
                 Privacy
               </Link>
-              <Link href="/terms" className="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">
+              <Link href="/terms" className="text-gray-600 dark:text-gray-400 hover:text-secondary dark:hover:text-secondary transition-colors">
                 Terms
               </Link>
             </div>

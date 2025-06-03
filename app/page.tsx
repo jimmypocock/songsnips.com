@@ -5,21 +5,20 @@ export default function Home() {
   return (
     <>
       {/* Top accent bar */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#012f49] via-orange-500 to-[#fcc04a] z-50"></div>
+      <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent z-50"></div>
       
       {/* Navigation */}
       <nav className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-6">
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#012f49]/5 via-transparent to-[#fcc04a]/5 rounded-2xl blur-xl"></div>
-          <div className="relative flex items-center justify-between bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-2xl px-6 py-3 border border-[#012f49]/10">
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">
+          <div className="relative flex items-center justify-between bg-white dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl px-6 py-3 shadow-lg">
+          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             SongSnips
           </Link>
           <div className="flex items-center gap-6">
-            <Link href="/how-it-works" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">
+            <Link href="/how-it-works" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-secondary transition-colors font-medium">
               How It Works
             </Link>
-            <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">
+            <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-secondary transition-colors font-medium">
               About
             </Link>
           </div>
@@ -42,10 +41,10 @@ export default function Home() {
               </p>
             </div>
             <div className="flex gap-6">
-              <Link href="/privacy" className="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">
+              <Link href="/privacy" className="text-gray-600 dark:text-gray-400 hover:text-secondary dark:hover:text-secondary transition-colors">
                 Privacy
               </Link>
-              <Link href="/terms" className="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">
+              <Link href="/terms" className="text-gray-600 dark:text-gray-400 hover:text-secondary dark:hover:text-secondary transition-colors">
                 Terms
               </Link>
             </div>

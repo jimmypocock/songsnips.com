@@ -49,11 +49,11 @@ export default function LoopCounter({ isLooping, currentTime, loopEnd }: LoopCou
     <div className="flex gap-4 justify-center text-sm text-gray-600 dark:text-gray-400">
       <div className="flex items-center gap-2">
         <span className="text-2xl">🔁</span>
-        <span>Loop <strong className="text-orange-600 dark:text-yellow-400">{loopCount}</strong> of ∞</span>
+        <span>Loop <strong className="text-secondary dark:text-secondary">{loopCount}</strong> of ∞</span>
       </div>
       <div className="flex items-center gap-2">
         <span className="text-2xl">⏱️</span>
-        <span>Practice time: <strong className="text-orange-600 dark:text-yellow-400">{formatPracticeTime(practiceTime)}</strong></span>
+        <span>Practice time: <strong className="text-secondary dark:text-secondary">{formatPracticeTime(practiceTime)}</strong></span>
       </div>
     </div>
   );

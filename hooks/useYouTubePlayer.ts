@@ -19,6 +19,17 @@ export function useYouTubePlayer() {
   
   const updateIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const playerRef = useRef<any>(null);
+  const isLoopingRef = useRef(isLooping);
+  const loopPointsRef = useRef(loopPoints);
+  
+  // Update refs when state changes
+  useEffect(() => {
+    isLoopingRef.current = isLooping;
+  }, [isLooping]);
+  
+  useEffect(() => {
+    loopPointsRef.current = loopPoints;
+  }, [loopPoints]);
 
   // Handle player ready
   const handlePlayerReady = useCallback((playerInstance: any) => {
@@ -44,9 +55,9 @@ export function useYouTubePlayer() {
           const time = playerRef.current.getCurrentTime();
           setCurrentTime(time);
           
-          // Check if we need to loop
-          if (isLooping && loopPoints.end !== null && time >= loopPoints.end) {
-            playerRef.current.seekTo(loopPoints.start || 0);
+          // Check if we need to loop using refs to get current values
+          if (isLoopingRef.current && loopPointsRef.current.end !== null && time >= loopPointsRef.current.end) {
+            playerRef.current.seekTo(loopPointsRef.current.start || 0);
           }
         }
       }, 100);
@@ -57,7 +68,7 @@ export function useYouTubePlayer() {
         updateIntervalRef.current = null;
       }
     }
-  }, [isLooping, loopPoints]);
+  }, []);
 
   // Handle errors
   const handleError = useCallback((event: any) => {
@@ -129,6 +140,7 @@ export function useYouTubePlayer() {
       // Auto-enable looping when both points are set
       if (newPoints.start !== null && newPoints.end !== null) {
         setIsLooping(true);
+        setSuccess('Loop points set! The video will now loop between these points.');
       }
       
       return newPoints;

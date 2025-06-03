@@ -18,7 +18,7 @@ export default function ControlButtons({
       {/* Play/Pause Button */}
       <button
         onClick={onPlayPause}
-        className="px-6 py-3 bg-[#012f49] hover:bg-[#013a5a] text-white font-semibold rounded-lg shadow-lg shadow-[#012f49]/25 transition-all duration-200"
+        className="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
       >
         Play/Pause
       </button>
@@ -26,7 +26,7 @@ export default function ControlButtons({
       {/* Stop Button */}
       <button
         onClick={onStop}
-        className="px-6 py-3 bg-[#d62729] hover:bg-[#c11f21] text-white font-semibold rounded-lg shadow-lg shadow-[#d62729]/25 transition-all duration-200"
+        className="px-6 py-3 bg-danger hover:bg-red-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
       >
         Stop
       </button>
@@ -35,9 +35,9 @@ export default function ControlButtons({
       <button
         onClick={onClearLoop}
         disabled={!hasLoopPoints}
-        className={`px-6 py-3 font-semibold rounded-lg shadow-lg transition-all duration-200 text-white
+        className={`px-6 py-3 font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-white
           ${hasLoopPoints 
-            ? 'bg-gray-500 hover:bg-gray-600 shadow-gray-500/25' 
+            ? 'bg-neutral hover:bg-gray-600' 
             : 'bg-gray-400 cursor-not-allowed opacity-50'
           }
         `}

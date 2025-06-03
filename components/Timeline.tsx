@@ -94,10 +94,10 @@ export default function Timeline({
     <div className="space-y-4">
       {/* Time display */}
       <div className="flex justify-between text-sm">
-        <span className="font-mono font-medium text-[#012f49] dark:text-gray-400 bg-[#012f49]/5 dark:bg-transparent px-2 py-1 rounded">
+        <span className="font-mono font-medium text-gray-700 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-md">
           {formatTime(currentTime)}
         </span>
-        <span className="font-mono font-medium text-[#012f49] dark:text-gray-400 bg-[#012f49]/5 dark:bg-transparent px-2 py-1 rounded">
+        <span className="font-mono font-medium text-gray-700 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-md">
           {formatTime(duration)}
         </span>
       </div>
@@ -105,19 +105,19 @@ export default function Timeline({
       {/* Timeline */}
       <div
         ref={timelineRef}
-        className="relative h-16 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer shadow-inner overflow-hidden border-2 border-[#012f49]/10 dark:border-[#012f49]/20"
+        className="relative h-16 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer shadow-inner overflow-hidden border border-gray-300 dark:border-gray-600"
         onClick={handleTimelineClick}
       >
         {/* Progress fill */}
         <div
-          className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full transition-all duration-100"
+          className="absolute inset-y-0 left-0 bg-gradient-to-r from-accent to-secondary rounded-full transition-all duration-100"
           style={{ width: `${progressPercent}%` }}
         />
 
         {/* Loop region */}
         {loopStart !== null && loopEnd !== null && (
           <div
-            className="absolute inset-y-0 bg-gradient-to-r from-[#012f49]/20 to-[#fcc04a]/30 backdrop-blur-sm"
+            className="absolute inset-y-0 bg-primary/20 dark:bg-accent/20 backdrop-blur-sm"
             style={{
               left: `${loopStartPercent}%`,
               width: `${loopWidth}%`,
@@ -128,7 +128,7 @@ export default function Timeline({
         {/* Loop start handle */}
         {loopStart !== null && (
           <div
-            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-10 bg-orange-600 dark:bg-yellow-500 border-3 border-white dark:border-gray-800 rounded-lg cursor-ew-resize shadow-lg hover:scale-110 transition-transform flex items-center justify-center"
+            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-10 bg-secondary dark:bg-secondary border-2 border-white dark:border-gray-800 rounded-lg cursor-ew-resize shadow-lg hover:scale-110 transition-transform flex items-center justify-center"
             style={{ left: `${loopStartPercent}%` }}
             onMouseDown={(e) => handleDragStart(e, 'start')}
           >
@@ -139,7 +139,7 @@ export default function Timeline({
         {/* Loop end handle */}
         {loopEnd !== null && (
           <div
-            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-10 bg-orange-600 dark:bg-yellow-500 border-3 border-white dark:border-gray-800 rounded-lg cursor-ew-resize shadow-lg hover:scale-110 transition-transform flex items-center justify-center"
+            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-10 bg-secondary dark:bg-secondary border-2 border-white dark:border-gray-800 rounded-lg cursor-ew-resize shadow-lg hover:scale-110 transition-transform flex items-center justify-center"
             style={{ left: `${loopEndPercent}%` }}
             onMouseDown={(e) => handleDragStart(e, 'end')}
           >
@@ -150,13 +150,13 @@ export default function Timeline({
 
       {/* Loop info */}
       <div className="text-center">
-        <div className="inline-block text-sm bg-gradient-to-r from-[#012f49]/5 via-transparent to-[#fcc04a]/5 dark:from-[#012f49]/10 dark:to-[#fcc04a]/10 py-2 px-4 rounded-lg">
-        <span className="text-[#012f49] dark:text-gray-400 font-medium">Loop: </span>
-        <span className="font-mono font-bold text-[#012f49] dark:text-yellow-400 bg-white/50 dark:bg-transparent px-2 py-0.5 rounded">
+        <div className="inline-block text-sm bg-gray-100 dark:bg-gray-800 py-2 px-4 rounded-lg">
+        <span className="text-gray-600 dark:text-gray-400 font-medium">Loop: </span>
+        <span className="font-mono font-bold text-primary dark:text-accent px-2 py-0.5 rounded">
           {loopStart !== null ? formatTime(loopStart) : 'Click timeline'}
         </span>
-        <span className="text-[#012f49] dark:text-gray-400 mx-2 font-bold">→</span>
-        <span className="font-mono font-bold text-[#012f49] dark:text-yellow-400 bg-white/50 dark:bg-transparent px-2 py-0.5 rounded">
+        <span className="text-gray-600 dark:text-gray-400 mx-2 font-bold">→</span>
+        <span className="font-mono font-bold text-primary dark:text-accent px-2 py-0.5 rounded">
           {loopEnd !== null ? formatTime(loopEnd) : 'to set loop'}
         </span>
         </div>

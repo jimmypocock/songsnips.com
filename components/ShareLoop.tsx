@@ -53,7 +53,7 @@ export default function ShareLoop({ videoUrl, loopStart, loopEnd }: ShareLoopPro
     <div className="flex items-center gap-2">
       <button
         onClick={handleCopy}
-        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#012f49] to-[#012f49]/80 hover:from-[#012f49]/90 hover:to-[#012f49]/70 text-white rounded-lg transition-all shadow-md hover:shadow-lg"
+        className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-blue-600 text-white rounded-lg transition-all shadow-md hover:shadow-lg"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.032 4.026a9.001 9.001 0 01-7.432 0m9.032-4.026A9.001 9.001 0 0112 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9a9.001 9.001 0 00-1.684-5.316m-7.432 0a3 3 0 110 2.684" />

@@ -216,49 +216,48 @@ export default function SongSnips() {
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-4xl md:text-5xl font-bold mb-3">
-          <span className="bg-gradient-to-r from-[#012f49] via-[#012f49] to-orange-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             🎵 SongSnips
           </span>
         </h1>
-        <p className="text-[#012f49] dark:text-gray-300 font-semibold text-lg">
+        <p className="text-gray-700 dark:text-gray-300 font-semibold text-lg">
           Master any song section with smart looping
         </p>
         <div className="mt-4 flex justify-center gap-2">
-          <span className="inline-block w-12 h-1 bg-[#012f49] rounded-full"></span>
-          <span className="inline-block w-12 h-1 bg-orange-500 rounded-full"></span>
-          <span className="inline-block w-12 h-1 bg-[#fcc04a] rounded-full"></span>
+          <span className="inline-block w-16 h-1 bg-primary rounded-full"></span>
+          <span className="inline-block w-16 h-1 bg-secondary rounded-full"></span>
+          <span className="inline-block w-16 h-1 bg-accent rounded-full"></span>
         </div>
       </div>
 
       {/* Error/Success Messages */}
       {error && (
-        <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
           {error}
         </div>
       )}
       {success && !error && (
-        <div className="bg-gradient-to-r from-[#012f49]/10 to-[#fcc04a]/10 dark:from-[#012f49]/20 dark:to-[#fcc04a]/20 border border-[#012f49] dark:border-[#fcc04a] text-[#012f49] dark:text-[#fcc04a] px-4 py-3 rounded-lg font-medium">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg font-medium">
           {success}
         </div>
       )}
 
       {/* Video URL Input */}
-      <div className="space-y-3 bg-gradient-to-r from-[#012f49]/5 via-transparent to-[#012f49]/5 dark:from-[#012f49]/10 dark:to-[#012f49]/10 p-6 rounded-2xl">
+      <div className="space-y-3 bg-white dark:bg-gray-800/50 p-6 rounded-2xl shadow-lg backdrop-blur-sm">
         <div className="flex gap-3">
-          <div className="flex-1 relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#012f49]/10 to-transparent rounded-lg"></div>
+          <div className="flex-1">
             <input
               type="text"
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleLoadVideo()}
               placeholder="Paste YouTube URL here (e.g., https://youtube.com/watch?v=...)"
-              className="relative w-full px-4 py-3 border-2 border-[#012f49]/30 dark:border-gray-600 rounded-lg focus:outline-none focus:border-[#012f49] dark:focus:border-yellow-500 bg-white/90 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-[#012f49]/50 dark:placeholder-gray-500"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:border-primary dark:focus:border-accent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
             />
           </div>
           <button
             onClick={handleLoadVideo}
-            className="px-6 py-3 bg-gradient-to-r from-[#012f49] to-[#012f49]/80 hover:from-[#012f49]/90 hover:to-[#012f49]/70 text-white font-semibold rounded-lg shadow-lg shadow-[#012f49]/25 transition-all duration-200"
+            className="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
           >
             Load Video
           </button>
@@ -267,7 +266,7 @@ export default function SongSnips() {
         <div className="text-center">
           <button
             onClick={handleLoadTestVideo}
-            className="text-sm text-orange-600 hover:text-orange-700 dark:text-yellow-500 dark:hover:text-yellow-400 underline"
+            className="text-sm text-secondary hover:text-secondary-hover dark:text-secondary dark:hover:text-secondary-hover font-medium underline underline-offset-2"
           >
             Load Test Video
           </button>
@@ -279,8 +278,7 @@ export default function SongSnips() {
 
       {/* YouTube Player */}
       <div className="relative">
-        <div className="absolute -inset-4 bg-gradient-to-r from-[#012f49]/20 via-[#012f49]/10 to-[#012f49]/20 rounded-3xl blur-xl"></div>
-        <div className="relative">
+        <div className="relative rounded-xl overflow-hidden shadow-2xl">
           <YouTubePlayer
             ref={playerComponentRef}
             onReady={handlePlayerReady}
@@ -292,7 +290,18 @@ export default function SongSnips() {
       </div>
 
       {/* Timeline */}
-      <div className="bg-gradient-to-br from-gray-100 to-[#012f49]/5 dark:bg-gradient-to-br dark:from-gray-800 dark:to-[#012f49]/10 rounded-xl p-6 space-y-4 shadow-lg">
+      <div className="bg-white dark:bg-gray-800/50 rounded-xl p-6 space-y-4 shadow-lg backdrop-blur-sm">
+        {/* Loop Status Indicator */}
+        {loopPoints.start !== null && loopPoints.end !== null && (
+          <div className={`text-center py-2 px-4 rounded-lg font-medium transition-all ${
+            isLooping 
+              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-300 dark:border-green-700' 
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600'
+          }`}>
+            {isLooping ? '🔁 Loop Active' : '⏸️ Loop Ready (Play to activate)'}
+          </div>
+        )}
+        
         <Timeline
           duration={duration}
           currentTime={currentTime}
@@ -319,7 +328,7 @@ export default function SongSnips() {
       </div>
 
       {/* Control Buttons */}
-      <div className="bg-gradient-to-bl from-[#fcc04a]/10 to-gray-100 dark:bg-gradient-to-bl dark:from-[#fcc04a]/5 dark:to-gray-800 rounded-xl p-6 space-y-4 shadow-lg">
+      <div className="bg-white dark:bg-gray-800/50 rounded-xl p-6 space-y-4 shadow-lg backdrop-blur-sm">
         <ControlButtons
           onPlayPause={togglePlayPause}
           onStop={stopPlayback}
@@ -346,14 +355,14 @@ export default function SongSnips() {
       </div>
 
       {/* Instructions */}
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-orange-500 p-6 rounded-lg">
+      <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary p-6 rounded-lg">
         <div className="flex justify-between items-start mb-3">
-          <h3 className="text-lg font-semibold text-orange-800 dark:text-yellow-300">
+          <h3 className="text-lg font-semibold text-primary dark:text-accent">
             How to Use:
           </h3>
           <button
             onClick={() => setShowShortcuts(!showShortcuts)}
-            className="text-sm text-orange-600 hover:text-orange-700 dark:text-yellow-400 dark:hover:text-yellow-300 underline"
+            className="text-sm text-secondary hover:text-secondary-hover dark:text-secondary dark:hover:text-secondary-hover font-medium underline underline-offset-2"
           >
             {showShortcuts ? 'Hide' : 'Show'} Keyboard Shortcuts
           </button>
