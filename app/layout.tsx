@@ -5,7 +5,6 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import AdSenseScript from "@/components/AdSense/AdSenseScript";
 import GoogleCMP from "@/components/GoogleCMP";
 import GoogleConsentInit from "@/components/GoogleConsentInit";
-import ThemeToggle from "@/components/ThemeToggle";
 
 // Configure Noto Sans for UI text with phonetic support
 const notoSans = Noto_Sans({
@@ -102,7 +101,6 @@ export default function RootLayout({
           <div className="gradient-orb orb4" />
         </div>
         
-        <ThemeToggle />
         {children}
         <GoogleCMP />
       </body>

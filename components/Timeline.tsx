@@ -22,6 +22,7 @@ export default function Timeline({
   const timelineRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragHandle, setDragHandle] = useState<'start' | 'end' | null>(null);
+  const [touchIdentifier, setTouchIdentifier] = useState<number | null>(null);
 
   // Format time helper
   const formatTime = (seconds: number): string => {
@@ -46,9 +47,19 @@ export default function Timeline({
     onTimelineClick(clickTime);
   }, [duration, isDragging, onTimelineClick]);
 
-  // Handle drag start
+  // Handle drag start (mouse)
   const handleDragStart = useCallback((e: React.MouseEvent, handle: 'start' | 'end') => {
     e.stopPropagation();
+    e.preventDefault();
+    setIsDragging(true);
+    setDragHandle(handle);
+  }, []);
+  
+  // Handle drag start (touch)
+  const handleTouchStart = useCallback((e: React.TouchEvent, handle: 'start' | 'end') => {
+    e.stopPropagation();
+    const touch = e.touches[0];
+    setTouchIdentifier(touch.identifier);
     setIsDragging(true);
     setDragHandle(handle);
   }, []);
@@ -57,9 +68,9 @@ export default function Timeline({
   useEffect(() => {
     if (!isDragging || !dragHandle || !timelineRef.current) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMove = (clientX: number) => {
       const rect = timelineRef.current!.getBoundingClientRect();
-      const x = e.clientX - rect.left;
+      const x = clientX - rect.left;
       const percentage = Math.max(0, Math.min(1, x / rect.width));
       const time = percentage * duration;
 
@@ -70,19 +81,39 @@ export default function Timeline({
       }
     };
 
-    const handleMouseUp = () => {
+    const handleMouseMove = (e: MouseEvent) => {
+      handleMove(e.clientX);
+    };
+    
+    const handleTouchMove = (e: TouchEvent) => {
+      if (touchIdentifier !== null) {
+        const touch = Array.from(e.touches).find(t => t.identifier === touchIdentifier);
+        if (touch) {
+          handleMove(touch.clientX);
+        }
+      }
+    };
+
+    const handleEnd = () => {
       setIsDragging(false);
       setDragHandle(null);
+      setTouchIdentifier(null);
     };
 
     document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('mouseup', handleEnd);
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleEnd);
+    document.addEventListener('touchcancel', handleEnd);
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mouseup', handleEnd);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleEnd);
+      document.removeEventListener('touchcancel', handleEnd);
     };
-  }, [isDragging, dragHandle, duration, loopStart, loopEnd, onLoopPointChange]);
+  }, [isDragging, dragHandle, duration, loopStart, loopEnd, onLoopPointChange, touchIdentifier]);
 
   // Calculate positions
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -91,33 +122,36 @@ export default function Timeline({
   const loopWidth = loopEnd !== null && loopStart !== null ? loopEndPercent - loopStartPercent : 0;
 
   return (
-    <div className="space-y-4">
-      {/* Time display */}
-      <div className="flex justify-between text-sm">
-        <span className="font-mono font-medium text-gray-700 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-md">
+    <div className="space-y-2">
+      {/* Compact Time display */}
+      <div className="flex justify-between text-xs">
+        <span className="font-mono text-gray-600 dark:text-gray-400">
           {formatTime(currentTime)}
         </span>
-        <span className="font-mono font-medium text-gray-700 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-md">
+        <span className="font-mono text-gray-600 dark:text-gray-400">
           {formatTime(duration)}
         </span>
       </div>
 
-      {/* Timeline */}
+      {/* Compact Timeline */}
       <div
         ref={timelineRef}
-        className="relative h-16 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer shadow-inner overflow-hidden border border-gray-300 dark:border-gray-600"
+        className="relative h-10 md:h-8 bg-gray-200 dark:bg-gray-700 rounded cursor-pointer shadow-inner overflow-hidden"
         onClick={handleTimelineClick}
       >
-        {/* Progress fill */}
+        {/* Background track */}
+        <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700" />
+        
+        {/* Progress bar - taller, single color gradient */}
         <div
-          className="absolute inset-y-0 left-0 bg-gradient-to-r from-accent to-secondary rounded-full transition-all duration-100"
+          className="absolute inset-y-1 left-0 bg-gradient-to-r from-blue-400 to-blue-600 rounded transition-all duration-100"
           style={{ width: `${progressPercent}%` }}
         />
 
-        {/* Loop region */}
+        {/* Loop region with visible overlay */}
         {loopStart !== null && loopEnd !== null && (
           <div
-            className="absolute inset-y-0 bg-primary/20 dark:bg-accent/20 backdrop-blur-sm"
+            className="absolute inset-y-0 bg-orange-500/30 dark:bg-orange-400/40 border-x-2 border-orange-500/60 z-[1]"
             style={{
               left: `${loopStartPercent}%`,
               width: `${loopWidth}%`,
@@ -125,42 +159,51 @@ export default function Timeline({
           />
         )}
 
-        {/* Loop start handle */}
+        {/* Loop start handle - rectangle */}
         {loopStart !== null && (
           <div
-            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-10 bg-secondary dark:bg-secondary border-2 border-white dark:border-gray-800 rounded-lg cursor-ew-resize shadow-lg hover:scale-110 transition-transform flex items-center justify-center"
+            className="loop-handle absolute top-0 bottom-0 -translate-x-1/2 w-6 md:w-4 bg-gradient-to-b from-orange-500 to-orange-600 dark:from-orange-400 dark:to-orange-500 cursor-ew-resize shadow-md hover:shadow-lg hover:from-orange-600 hover:to-orange-700 active:scale-x-125 transition-all duration-200 touch-manipulation rounded-sm z-[2]"
             style={{ left: `${loopStartPercent}%` }}
             onMouseDown={(e) => handleDragStart(e, 'start')}
+            onTouchStart={(e) => handleTouchStart(e, 'start')}
           >
-            <span className="text-white font-bold text-sm select-none">[</span>
+            <div className="flex items-center justify-center h-full text-white">
+              <svg className="w-3 h-5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                <path d="M15 5L8 12l7 7" />
+              </svg>
+            </div>
           </div>
         )}
 
-        {/* Loop end handle */}
+        {/* Loop end handle - rectangle */}
         {loopEnd !== null && (
           <div
-            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-10 bg-secondary dark:bg-secondary border-2 border-white dark:border-gray-800 rounded-lg cursor-ew-resize shadow-lg hover:scale-110 transition-transform flex items-center justify-center"
+            className="loop-handle absolute top-0 bottom-0 -translate-x-1/2 w-6 md:w-4 bg-gradient-to-b from-orange-500 to-orange-600 dark:from-orange-400 dark:to-orange-500 cursor-ew-resize shadow-md hover:shadow-lg hover:from-orange-600 hover:to-orange-700 active:scale-x-125 transition-all duration-200 touch-manipulation rounded-sm z-[2]"
             style={{ left: `${loopEndPercent}%` }}
             onMouseDown={(e) => handleDragStart(e, 'end')}
+            onTouchStart={(e) => handleTouchStart(e, 'end')}
           >
-            <span className="text-white font-bold text-sm select-none">]</span>
+            <div className="flex items-center justify-center h-full text-white">
+              <svg className="w-3 h-5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                <path d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Loop info */}
-      <div className="text-center">
-        <div className="inline-block text-sm bg-gray-100 dark:bg-gray-800 py-2 px-4 rounded-lg">
-        <span className="text-gray-600 dark:text-gray-400 font-medium">Loop: </span>
-        <span className="font-mono font-bold text-primary dark:text-accent px-2 py-0.5 rounded">
-          {loopStart !== null ? formatTime(loopStart) : 'Click timeline'}
-        </span>
-        <span className="text-gray-600 dark:text-gray-400 mx-2 font-bold">→</span>
-        <span className="font-mono font-bold text-primary dark:text-accent px-2 py-0.5 rounded">
-          {loopEnd !== null ? formatTime(loopEnd) : 'to set loop'}
-        </span>
+      {/* Compact Loop info */}
+      {(loopStart !== null || loopEnd !== null) && (
+        <div className="text-center text-xs text-gray-600 dark:text-gray-400">
+          <span className="font-mono">
+            {loopStart !== null ? formatTime(loopStart) : '--:--'}
+          </span>
+          <span className="mx-2">→</span>
+          <span className="font-mono">
+            {loopEnd !== null ? formatTime(loopEnd) : '--:--'}
+          </span>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -140,7 +140,6 @@ export function useYouTubePlayer() {
       // Auto-enable looping when both points are set
       if (newPoints.start !== null && newPoints.end !== null) {
         setIsLooping(true);
-        setSuccess('Loop points set! The video will now loop between these points.');
       }
       
       return newPoints;

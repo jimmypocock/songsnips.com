@@ -46,10 +46,17 @@ const YouTubePlayer = forwardRef<any, YouTubePlayerProps>(({ onReady, onStateCha
         width: '100%',
         videoId: '',
         playerVars: {
-          controls: 1,
-          modestbranding: 1,
-          rel: 0,
-          autoplay: 0,
+          controls: 0,           // Hide YouTube controls
+          modestbranding: 1,     // Minimal YouTube branding (deprecated but still works)
+          rel: 0,                // No related videos at the end
+          autoplay: 0,           // Don't autoplay
+          showinfo: 0,           // Hide video title and uploader (deprecated)
+          fs: 0,                 // Hide fullscreen button
+          disablekb: 1,          // Disable keyboard controls (we have our own)
+          iv_load_policy: 3,     // Hide video annotations
+          playsinline: 1,        // Play inline on iOS
+          enablejsapi: 1,        // Enable JavaScript API
+          origin: typeof window !== 'undefined' ? window.location.origin : '',
         },
         events: {
           onReady: (event: any) => {
@@ -99,9 +106,22 @@ const YouTubePlayer = forwardRef<any, YouTubePlayerProps>(({ onReady, onStateCha
   }), [loadVideo, getPlayer]);
 
   return (
-    <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-gradient-to-br from-[#012f49] to-gray-900 p-1">
-      <div className="relative w-full h-full rounded-lg overflow-hidden bg-gray-900">
+    <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg bg-gray-900">
+      <div className="relative w-full h-full overflow-hidden">
         <div ref={containerRef} className="absolute inset-0" />
+        
+        {/* Invisible overlay to prevent accidental YouTube UI interactions */}
+        {videoId && (
+          <div className="absolute inset-0 z-10 pointer-events-none">
+            {/* Small clickable area in center for play/pause if needed */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-20 h-20 pointer-events-auto opacity-0 hover:opacity-100 transition-opacity">
+                {/* This area can be used for custom play/pause if desired */}
+              </div>
+            </div>
+          </div>
+        )}
+        
         {!isAPIReady && (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#012f49] to-gray-900 text-white">
             <div className="text-center">

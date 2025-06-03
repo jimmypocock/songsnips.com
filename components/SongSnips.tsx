@@ -23,6 +23,7 @@ export default function SongSnips() {
     currentTime,
     loopPoints,
     isLooping,
+    isPlaying,
     error,
     success,
     handlePlayerReady,
@@ -46,18 +47,18 @@ export default function SongSnips() {
       const videoId = params.get('v');
       const startTime = params.get('start');
       const endTime = params.get('end');
-      
+
       if (videoId) {
         const url = `https://youtube.com/watch?v=${videoId}`;
         setVideoUrl(url);
-        
+
         // Auto-load the video after a short delay
         setTimeout(() => {
           if (playerComponentRef.current) {
             const player = playerComponentRef.current.getPlayer();
             if (player && player.loadVideoById) {
               player.loadVideoById(videoId);
-              
+
               // Set loop points if provided
               if (startTime && endTime) {
                 setTimeout(() => {
@@ -83,7 +84,7 @@ export default function SongSnips() {
   // Load video
   const handleLoadVideo = () => {
     const videoId = extractVideoId(videoUrl);
-    
+
     if (!videoId) {
       setError('Please enter a valid YouTube URL');
       return;
@@ -106,7 +107,7 @@ export default function SongSnips() {
   const handleLoadTestVideo = () => {
     const testUrl = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
     setVideoUrl(testUrl);
-    
+
     // Use the video ID directly
     if (playerComponentRef.current) {
       const player = playerComponentRef.current.getPlayer();
@@ -137,7 +138,7 @@ export default function SongSnips() {
       // Both points set, update closest one
       const distToStart = Math.abs(time - loopPoints.start);
       const distToEnd = Math.abs(time - loopPoints.end);
-      
+
       if (distToStart < distToEnd) {
         setLoopPoint('start', time);
         seekTo(time);
@@ -151,7 +152,7 @@ export default function SongSnips() {
   // Handle loop point change (from dragging or clicking)
   const handleLoopPointChange = (type: 'start' | 'end', time: number, isDragging: boolean = false) => {
     setLoopPoint(type, time);
-    
+
     // Only adjust playback position when dragging, not clicking
     if (isDragging) {
       // Smart playback position handling when dragging
@@ -205,7 +206,7 @@ export default function SongSnips() {
   const hasLoopPoints = loopPoints.start !== null && loopPoints.end !== null;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-4 md:space-y-6 px-2 md:px-0">
       <KeyboardShortcuts
         onPlayPause={togglePlayPause}
         onStop={stopPlayback}
@@ -213,72 +214,44 @@ export default function SongSnips() {
         onSeek={handleSeek}
         onSetLoopPoint={handleSetLoopPointAtCurrentTime}
       />
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl md:text-5xl font-bold mb-3">
-          <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            🎵 SongSnips
-          </span>
-        </h1>
-        <p className="text-gray-700 dark:text-gray-300 font-semibold text-lg">
-          Master any song section with smart looping
-        </p>
-        <div className="mt-4 flex justify-center gap-2">
-          <span className="inline-block w-16 h-1 bg-primary rounded-full"></span>
-          <span className="inline-block w-16 h-1 bg-secondary rounded-full"></span>
-          <span className="inline-block w-16 h-1 bg-accent rounded-full"></span>
-        </div>
-      </div>
 
-      {/* Error/Success Messages */}
+      {/* Animated Error/Success Messages */}
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
-          {error}
-        </div>
-      )}
-      {success && !error && (
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg font-medium">
-          {success}
+        <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg shadow-md animate-shake">
+          💔 {error}
         </div>
       )}
 
-      {/* Video URL Input */}
-      <div className="space-y-3 bg-white dark:bg-gray-800/50 p-6 rounded-2xl shadow-lg backdrop-blur-sm">
-        <div className="flex gap-3">
-          <div className="flex-1">
-            <input
-              type="text"
-              value={videoUrl}
-              onChange={(e) => setVideoUrl(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleLoadVideo()}
-              placeholder="Paste YouTube URL here (e.g., https://youtube.com/watch?v=...)"
-              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:border-primary dark:focus:border-accent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
-            />
-          </div>
+      {/* Compact URL Input with Gradient Border */}
+      <div className="relative p-[2px] rounded-lg bg-gradient-to-r from-primary via-secondary to-accent mb-2">
+        <div className="flex gap-2 bg-white dark:bg-gray-900 rounded-lg p-1">
+          <input
+            type="text"
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleLoadVideo()}
+            placeholder="YouTube URL 🎶"
+            className="flex-1 px-3 py-2 rounded-md focus:outline-none bg-transparent text-sm placeholder-gray-400"
+          />
           <button
             onClick={handleLoadVideo}
-            className="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+            className="px-4 py-2 bg-gradient-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white font-medium rounded-md text-sm whitespace-nowrap transform hover:scale-105 transition-all duration-200 shadow-sm"
           >
-            Load Video
+            Load ✨
           </button>
-        </div>
-        
-        <div className="text-center">
           <button
             onClick={handleLoadTestVideo}
-            className="text-sm text-secondary hover:text-secondary-hover dark:text-secondary dark:hover:text-secondary-hover font-medium underline underline-offset-2"
+            className="px-3 py-2 bg-gradient-to-r from-secondary/20 to-accent/20 hover:from-secondary/30 hover:to-accent/30 text-secondary dark:text-secondary font-medium text-sm rounded-md transform hover:scale-105 transition-all duration-200"
+            title="Load test video"
           >
-            Load Test Video
+            Test
           </button>
-          <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
-            Try this if you're having trouble
-          </span>
         </div>
       </div>
 
-      {/* YouTube Player */}
-      <div className="relative">
-        <div className="relative rounded-xl overflow-hidden shadow-2xl">
+      {/* Compact YouTube Player */}
+      <div className="relative max-w-full">
+        <div className="relative rounded-lg overflow-hidden shadow-lg" style={{ maxHeight: '50vh' }}>
           <YouTubePlayer
             ref={playerComponentRef}
             onReady={handlePlayerReady}
@@ -289,97 +262,98 @@ export default function SongSnips() {
         </div>
       </div>
 
-      {/* Timeline */}
-      <div className="bg-white dark:bg-gray-800/50 rounded-xl p-6 space-y-4 shadow-lg backdrop-blur-sm">
-        {/* Loop Status Indicator */}
-        {loopPoints.start !== null && loopPoints.end !== null && (
-          <div className={`text-center py-2 px-4 rounded-lg font-medium transition-all ${
-            isLooping 
-              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-300 dark:border-green-700' 
-              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600'
-          }`}>
-            {isLooping ? '🔁 Loop Active' : '⏸️ Loop Ready (Play to activate)'}
+      {/* Compact Timeline & Core Controls */}
+      <div className="space-y-2">
+        {/* Timeline with Glow Effect */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20 blur-xl rounded-lg"></div>
+          <div className="relative bg-white dark:bg-gray-800/90 rounded-lg p-3 shadow-lg backdrop-blur-sm">
+            <Timeline
+              duration={duration}
+              currentTime={currentTime}
+              loopStart={loopPoints.start}
+              loopEnd={loopPoints.end}
+              onTimelineClick={handleTimelineClick}
+              onLoopPointChange={handleLoopPointChange}
+            />
           </div>
-        )}
-        
-        <Timeline
-          duration={duration}
-          currentTime={currentTime}
-          loopStart={loopPoints.start}
-          loopEnd={loopPoints.end}
-          onTimelineClick={handleTimelineClick}
-          onLoopPointChange={handleLoopPointChange}
-        />
-        
-        {/* Quick Loop Buttons */}
-        <QuickLoopButtons
-          currentTime={currentTime}
-          duration={duration}
-          onSetQuickLoop={handleQuickLoop}
-          isDisabled={duration === 0}
-        />
-        
-        {/* Loop Counter */}
-        <LoopCounter
-          isLooping={isLooping}
-          currentTime={currentTime}
-          loopEnd={loopPoints.end}
-        />
-      </div>
+        </div>
 
-      {/* Control Buttons */}
-      <div className="bg-white dark:bg-gray-800/50 rounded-xl p-6 space-y-4 shadow-lg backdrop-blur-sm">
-        <ControlButtons
-          onPlayPause={togglePlayPause}
-          onStop={stopPlayback}
-          onClearLoop={clearLoop}
-          hasLoopPoints={hasLoopPoints}
-        />
-        
-        {/* Speed Control */}
-        <div className="flex justify-center">
-          <SpeedControl
-            currentSpeed={playbackSpeed}
-            onSpeedChange={handleSpeedChange}
+        {/* Core Controls - Immediately accessible */}
+        <div className="bg-white dark:bg-gray-800/50 rounded-lg p-3 shadow">
+          <ControlButtons
+            onPlayPause={togglePlayPause}
+            onStop={stopPlayback}
+            onClearLoop={clearLoop}
+            hasLoopPoints={hasLoopPoints}
+            isPlaying={isPlaying}
           />
         </div>
-        
-        {/* Share Loop */}
-        <div className="flex justify-center pt-2">
-          <ShareLoop
-            videoUrl={videoUrl}
-            loopStart={loopPoints.start}
+      </div>
+
+      {/* Secondary Controls - Below the fold */}
+      <div className="space-y-3 mt-4">
+        {/* Quick Loop Buttons */}
+        <div className="bg-white dark:bg-gray-800/50 rounded-lg p-3 shadow">
+          <QuickLoopButtons
+            currentTime={currentTime}
+            duration={duration}
+            onSetQuickLoop={handleQuickLoop}
+            isDisabled={duration === 0}
+          />
+        </div>
+
+        {/* Loop Counter & Speed Control */}
+        <div className="bg-white dark:bg-gray-800/50 rounded-lg p-3 shadow space-y-3">
+          <LoopCounter
+            isLooping={isLooping}
+            currentTime={currentTime}
             loopEnd={loopPoints.end}
           />
+
+          <div className="flex justify-center">
+            <SpeedControl
+              currentSpeed={playbackSpeed}
+              onSpeedChange={handleSpeedChange}
+            />
+          </div>
+
+          <div className="flex justify-center">
+            <ShareLoop
+              videoUrl={videoUrl}
+              loopStart={loopPoints.start}
+              loopEnd={loopPoints.end}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Instructions */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary p-6 rounded-lg">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="text-lg font-semibold text-primary dark:text-accent">
-            How to Use:
+      {/* Instructions - Collapsible on Mobile */}
+      <details className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary rounded-lg">
+        <summary className="p-4 md:p-6 cursor-pointer">
+          <h3 className="inline text-base md:text-lg font-semibold text-primary dark:text-accent">
+            How to Use
           </h3>
+        </summary>
+        <div className="px-4 pb-4 md:px-6 md:pb-6 -mt-2">
+          <ol className="list-decimal list-inside space-y-2 text-sm md:text-base text-gray-700 dark:text-gray-300">
+            <li>Paste YouTube URL and tap "Load Video"</li>
+            <li>Tap timeline to set loop start</li>
+            <li>Tap again for loop end</li>
+            <li>Drag markers to adjust</li>
+          </ol>
+          <div className="mt-4 space-y-1 text-xs md:text-sm text-gray-600 dark:text-gray-400">
+            <p><strong>Tip:</strong> Use quick loop buttons for instant loops</p>
+          </div>
           <button
             onClick={() => setShowShortcuts(!showShortcuts)}
-            className="text-sm text-secondary hover:text-secondary-hover dark:text-secondary dark:hover:text-secondary-hover font-medium underline underline-offset-2"
+            className="mt-3 text-xs md:text-sm text-secondary hover:text-secondary-hover dark:text-secondary dark:hover:text-secondary-hover font-medium underline underline-offset-2"
           >
             {showShortcuts ? 'Hide' : 'Show'} Keyboard Shortcuts
           </button>
+          {showShortcuts && <KeyboardShortcutsHelp />}
         </div>
-        <ol className="list-decimal list-inside space-y-2 text-gray-700 dark:text-gray-300">
-          <li>Paste any YouTube URL and click "Load Video"</li>
-          <li>Click anywhere on the timeline to set the loop start point</li>
-          <li>Click again to set the loop end point - the loop starts automatically!</li>
-          <li>Drag the green handles to fine-tune your loop</li>
-          <li>Use "Clear Loop" to remove loop points and start over</li>
-        </ol>
-        <div className="mt-4 space-y-1 text-sm text-gray-600 dark:text-gray-400">
-          <p><strong>Tip:</strong> Use the quick loop buttons to instantly loop the last few seconds.</p>
-          <p><strong>Note:</strong> Adjust playback speed to practice difficult sections slowly.</p>
-        </div>
-        {showShortcuts && <KeyboardShortcutsHelp />}
-      </div>
+      </details>
     </div>
   );
 }
