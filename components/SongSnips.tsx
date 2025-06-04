@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import YouTubePlayer, { type YouTubePlayerRef } from './YouTubePlayer';
 import Timeline from './Timeline';
 import ControlButtons from './ControlButtons';
@@ -10,7 +10,6 @@ import SpeedControl from './SpeedControl';
 import KeyboardShortcuts, { KeyboardShortcutsHelp } from './KeyboardShortcuts';
 import ShareLoop from './ShareLoop';
 import { useYouTubePlayer } from '@/hooks/useYouTubePlayer';
-import { useEffect } from 'react';
 
 export default function SongSnips() {
   const [videoUrl, setVideoUrl] = useState('');
@@ -26,7 +25,6 @@ export default function SongSnips() {
     isLooping,
     isPlaying,
     error,
-    success,
     handlePlayerReady,
     handleStateChange,
     handleError,
@@ -37,7 +35,6 @@ export default function SongSnips() {
     clearLoop,
     seekTo,
     setError,
-    setSuccess,
   } = useYouTubePlayer();
 
   // Load from URL parameters on mount
@@ -64,7 +61,6 @@ export default function SongSnips() {
                 setTimeout(() => {
                   setLoopPoint('start', parseFloat(startTime));
                   setLoopPoint('end', parseFloat(endTime));
-                  setSuccess('Video and loop loaded from shared link!');
                 }, 1000);
               }
             }
@@ -72,7 +68,7 @@ export default function SongSnips() {
         }, 1000);
       }
     }
-  }, [setLoopPoint, setSuccess]);
+  }, [setLoopPoint]);
 
 
   // Load video
@@ -87,10 +83,6 @@ export default function SongSnips() {
       if (videoId) {
         clearLoop();
         setError(null);
-        // Show success message once player is ready
-        setTimeout(() => {
-          setSuccess('Video loaded successfully! Click on the timeline to set your loop points.');
-        }, 1000);
       } else {
         setError('Please enter a valid YouTube URL');
       }
@@ -107,10 +99,6 @@ export default function SongSnips() {
       if (videoId) {
         clearLoop();
         setError(null);
-        // Show success message once player is ready
-        setTimeout(() => {
-          setSuccess('Test video loaded successfully! Click on the timeline to set your loop points.');
-        }, 1000);
       }
     }
   };
@@ -210,16 +198,10 @@ export default function SongSnips() {
         onSetLoopPoint={handleSetLoopPointAtCurrentTime}
       />
 
-      {/* Animated Error/Success Messages */}
+      {/* Error Messages Only */}
       {error && (
         <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg shadow-md animate-shake">
           💔 {error}
-        </div>
-      )}
-      
-      {success && (
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg shadow-md animate-slide-in">
-          ✅ {success}
         </div>
       )}
 

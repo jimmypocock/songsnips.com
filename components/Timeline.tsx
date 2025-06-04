@@ -142,9 +142,9 @@ export default function Timeline({
         {/* Background track */}
         <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700" />
         
-        {/* Progress bar - taller, single color gradient */}
+        {/* Subtle progress indicator - thin line at bottom */}
         <div
-          className="absolute inset-y-1 left-0 bg-gradient-to-r from-blue-400 to-blue-600 rounded transition-all duration-100"
+          className="absolute bottom-0 left-0 h-1 bg-blue-500/50 dark:bg-blue-400/50 transition-all duration-100"
           style={{ width: `${progressPercent}%` }}
         />
 
@@ -159,35 +159,27 @@ export default function Timeline({
           />
         )}
 
-        {/* Loop start handle - rectangle */}
+        {/* Loop start handle - small circle */}
         {loopStart !== null && (
           <div
-            className="loop-handle absolute top-0 bottom-0 -translate-x-1/2 w-6 md:w-4 bg-gradient-to-b from-orange-500 to-orange-600 dark:from-orange-400 dark:to-orange-500 cursor-ew-resize shadow-md hover:shadow-lg hover:from-orange-600 hover:to-orange-700 active:scale-x-125 transition-all duration-200 touch-manipulation rounded-sm z-[2]"
+            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-orange-500 dark:bg-orange-400 rounded-full cursor-ew-resize shadow-lg hover:scale-125 active:scale-110 transition-transform duration-200 touch-manipulation z-[2]"
             style={{ left: `${loopStartPercent}%` }}
             onMouseDown={(e) => handleDragStart(e, 'start')}
             onTouchStart={(e) => handleTouchStart(e, 'start')}
           >
-            <div className="flex items-center justify-center h-full text-white">
-              <svg className="w-3 h-5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                <path d="M15 5L8 12l7 7" />
-              </svg>
-            </div>
+            <div className="absolute inset-0 bg-white/30 rounded-full m-1" />
           </div>
         )}
 
-        {/* Loop end handle - rectangle */}
+        {/* Loop end handle - small circle */}
         {loopEnd !== null && (
           <div
-            className="loop-handle absolute top-0 bottom-0 -translate-x-1/2 w-6 md:w-4 bg-gradient-to-b from-orange-500 to-orange-600 dark:from-orange-400 dark:to-orange-500 cursor-ew-resize shadow-md hover:shadow-lg hover:from-orange-600 hover:to-orange-700 active:scale-x-125 transition-all duration-200 touch-manipulation rounded-sm z-[2]"
+            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-orange-500 dark:bg-orange-400 rounded-full cursor-ew-resize shadow-lg hover:scale-125 active:scale-110 transition-transform duration-200 touch-manipulation z-[2]"
             style={{ left: `${loopEndPercent}%` }}
             onMouseDown={(e) => handleDragStart(e, 'end')}
             onTouchStart={(e) => handleTouchStart(e, 'end')}
           >
-            <div className="flex items-center justify-center h-full text-white">
-              <svg className="w-3 h-5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                <path d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
+            <div className="absolute inset-0 bg-white/30 rounded-full m-1" />
           </div>
         )}
       </div>

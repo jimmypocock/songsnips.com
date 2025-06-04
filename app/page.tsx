@@ -10,13 +10,22 @@ export default function Home() {
       <header className="border-b border-gray-200 dark:border-gray-800">
         <div className="h-0.5 bg-gradient-to-r from-primary via-secondary to-secondary"></div>
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Image 
-            src="/images/logo.webp" 
-            alt="SongSnips Logo" 
-            width={150} 
-            height={50} 
-            className="h-10 w-auto"
-          />
+          <>
+            <Image 
+              src="/images/logo.webp" 
+              alt="SongSnips Logo" 
+              width={150} 
+              height={50} 
+              className="h-10 w-auto dark:hidden"
+            />
+            <Image 
+              src="/images/logo-white.webp" 
+              alt="SongSnips Logo" 
+              width={150} 
+              height={50} 
+              className="h-10 w-auto hidden dark:block"
+            />
+          </>
           <div className="flex items-center gap-4">
             <Link href="/how-it-works" className="text-sm text-gray-600 dark:text-gray-400 hover:text-secondary px-2 py-1 rounded-md hover:bg-secondary/10 transition-all duration-200">
               Help

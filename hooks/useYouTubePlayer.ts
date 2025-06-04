@@ -15,7 +15,6 @@ export function useYouTubePlayer() {
   const [loopPoints, setLoopPoints] = useState<LoopPoint>({ start: null, end: null });
   const [isLooping, setIsLooping] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   
   const updateIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const playerRef = useRef<any>(null);
@@ -35,7 +34,6 @@ export function useYouTubePlayer() {
   const handlePlayerReady = useCallback((playerInstance: any) => {
     setPlayer(playerInstance);
     playerRef.current = playerInstance;
-    setSuccess('Player ready! Paste a YouTube URL above to get started.');
     setError(null);
   }, []);
 
@@ -74,7 +72,6 @@ export function useYouTubePlayer() {
   const handleError = useCallback((event: any) => {
     let errorMessage = 'Error loading video. ';
     
-    console.error('[YouTube Hook] Error code:', event.data);
     
     switch (event.data) {
       case 2:
@@ -98,7 +95,6 @@ export function useYouTubePlayer() {
     }
     
     setError(errorMessage);
-    setSuccess(null);
   }, []);
 
   // Handle duration change
@@ -125,6 +121,8 @@ export function useYouTubePlayer() {
     player.pauseVideo();
     const seekTime = loopPoints.start !== null ? loopPoints.start : 0;
     player.seekTo(seekTime);
+    // Update currentTime immediately to reflect the UI change
+    setCurrentTime(seekTime);
   }, [player, loopPoints.start]);
 
   // Set loop point
@@ -157,23 +155,6 @@ export function useYouTubePlayer() {
     setIsLooping(false);
   }, []);
 
-  // Toggle loop
-  const toggleLoop = useCallback(() => {
-    if (loopPoints.start !== null && loopPoints.end !== null) {
-      setIsLooping(prev => !prev);
-      
-      // Jump to loop start when enabling
-      if (!isLooping && player) {
-        player.seekTo(loopPoints.start);
-      }
-      
-      setError(null);
-      return true;
-    } else {
-      setError('Please set both loop points first by clicking on the timeline');
-      return false;
-    }
-  }, [loopPoints, isLooping, player]);
 
   // Seek to position
   const seekTo = useCallback((time: number) => {
@@ -199,7 +180,6 @@ export function useYouTubePlayer() {
     loopPoints,
     isLooping,
     error,
-    success,
     handlePlayerReady,
     handleStateChange,
     handleError,
@@ -208,9 +188,7 @@ export function useYouTubePlayer() {
     stopPlayback,
     setLoopPoint,
     clearLoop,
-    toggleLoop,
     seekTo,
     setError,
-    setSuccess,
   };
 }

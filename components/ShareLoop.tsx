@@ -40,8 +40,8 @@ export default function ShareLoop({ videoUrl, loopStart, loopEnd }: ShareLoopPro
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
+    } catch {
+      // Failed to copy to clipboard
     }
   };
 

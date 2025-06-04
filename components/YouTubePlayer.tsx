@@ -72,7 +72,6 @@ const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(({ onRead
 
   // Add debug log
   const addDebug = useCallback((message: string) => {
-    console.log(message);
     setDebugInfo(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
   }, []);
 

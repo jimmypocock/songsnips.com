@@ -34,8 +34,8 @@ export default function AdUnit({
     if (showAds && !testMode && adClient && consent === 'accepted') {
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (err) {
-        console.error('AdSense error:', err);
+      } catch {
+        // AdSense initialization error
       }
     }
   }, [showAds, testMode, adClient]);
