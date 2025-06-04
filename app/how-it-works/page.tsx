@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HowItWorks() {
   return (
@@ -6,8 +7,14 @@ export default function HowItWorks() {
       {/* Navigation */}
       <nav className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            SongSnips
+          <Link href="/">
+            <Image 
+              src="/images/logo.webp" 
+              alt="SongSnips Logo" 
+              width="150" 
+              height="50" 
+              className="h-10 w-auto"
+            />
           </Link>
           <div className="flex items-center gap-6">
             <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-secondary transition-colors font-medium">
@@ -39,7 +46,7 @@ export default function HowItWorks() {
                     Load Your Video
                   </h2>
                   <p className="text-gray-600 dark:text-gray-400 mb-4">
-                    Simply paste any YouTube URL into the input field and click "Load Video". SongSnips will instantly load the video in our player.
+                    Simply paste any YouTube URL into the input field and click &ldquo;Load Video&rdquo;. SongSnips will instantly load the video in our player.
                   </p>
                   <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                     <code className="text-sm text-secondary dark:text-secondary">
@@ -102,7 +109,7 @@ export default function HowItWorks() {
                     Practice Away!
                   </h2>
                   <p className="text-gray-600 dark:text-gray-400">
-                    Click "Enable Loop" and the video will automatically repeat your selected section. Use the Stop button to quickly return to your loop start point.
+                    Click &ldquo;Enable Loop&rdquo; and the video will automatically repeat your selected section. Use the Stop button to quickly return to your loop start point.
                   </p>
                 </div>
               </div>

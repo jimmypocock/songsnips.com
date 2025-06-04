@@ -18,12 +18,12 @@ export default {
           hover: "#023e5f",
         },
         secondary: {
-          DEFAULT: "#f77f00",  // Vibrant Orange
-          hover: "#e06f00",
+          DEFAULT: "#2196F3",  // Bright Blue - now secondary
+          hover: "#1976D2",
         },
         accent: {
-          DEFAULT: "#2196F3",     // Bright Blue
-          hover: "#1976D2",
+          DEFAULT: "#f77f00",     // Vibrant Orange - now accent for small highlights
+          hover: "#e06f00",
         },
         danger: {
           DEFAULT: "#ef4444",     // Red

@@ -38,7 +38,7 @@ npm run build
 
 # Deploy CDN stack
 echo "☁️  Deploying CDN distribution..."
-npx cdk deploy "$CDN_STACK" --require-approval never --context createCertificate=true "$@"
+npx cdk deploy "$CDN_STACK" --require-approval never "$@"
 
 cd ..
 

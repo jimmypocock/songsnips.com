@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Privacy() {
   return (
@@ -6,10 +7,14 @@ export default function Privacy() {
       {/* Header */}
       <header className="relative z-10 p-6">
         <nav className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-2">
-            <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>
-              Your App
-            </h1>
+          <Link href="/">
+            <Image 
+              src="/images/logo.webp" 
+              alt="SongSnips Logo" 
+              width="150" 
+              height="50" 
+              className="h-10 w-auto"
+            />
           </Link>
           
           <div className="hidden md:flex space-x-6">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import YouTubePlayer from './YouTubePlayer';
+import YouTubePlayer, { type YouTubePlayerRef } from './YouTubePlayer';
 import Timeline from './Timeline';
 import ControlButtons from './ControlButtons';
 import QuickLoopButtons from './QuickLoopButtons';
@@ -16,7 +16,8 @@ export default function SongSnips() {
   const [videoUrl, setVideoUrl] = useState('');
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [showShortcuts, setShowShortcuts] = useState(false);
-  const playerComponentRef = useRef<any>(null);
+  const [showDebug, setShowDebug] = useState(false);
+  const playerComponentRef = useRef<YouTubePlayerRef>(null);
 
   const {
     duration,
@@ -34,7 +35,6 @@ export default function SongSnips() {
     stopPlayback,
     setLoopPoint,
     clearLoop,
-    toggleLoop,
     seekTo,
     setError,
     setSuccess,
@@ -74,31 +74,25 @@ export default function SongSnips() {
     }
   }, [setLoopPoint, setSuccess]);
 
-  // Extract video ID from URL
-  const extractVideoId = (url: string): string | null => {
-    const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/;
-    const match = url.match(regex);
-    return match ? match[1] : null;
-  };
 
   // Load video
   const handleLoadVideo = () => {
-    const videoId = extractVideoId(videoUrl);
-
-    if (!videoId) {
-      setError('Please enter a valid YouTube URL');
+    if (!videoUrl.trim()) {
+      setError('Please enter a YouTube URL');
       return;
     }
 
     if (playerComponentRef.current) {
-      const player = playerComponentRef.current.getPlayer();
-      if (player && player.loadVideoById) {
-        player.loadVideoById(videoId);
+      const videoId = playerComponentRef.current.loadVideo(videoUrl);
+      if (videoId) {
         clearLoop();
-        setSuccess('Video loaded successfully! Click on the timeline to set your loop points.');
         setError(null);
+        // Show success message once player is ready
+        setTimeout(() => {
+          setSuccess('Video loaded successfully! Click on the timeline to set your loop points.');
+        }, 1000);
       } else {
-        setError('Player is initializing... Please try again in a moment.');
+        setError('Please enter a valid YouTube URL');
       }
     }
   };
@@ -108,14 +102,15 @@ export default function SongSnips() {
     const testUrl = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
     setVideoUrl(testUrl);
 
-    // Use the video ID directly
     if (playerComponentRef.current) {
-      const player = playerComponentRef.current.getPlayer();
-      if (player && player.loadVideoById) {
-        player.loadVideoById('jNQXAC9IVRw');
+      const videoId = playerComponentRef.current.loadVideo(testUrl);
+      if (videoId) {
         clearLoop();
-        setSuccess('Test video loaded successfully! Click on the timeline to set your loop points.');
         setError(null);
+        // Show success message once player is ready
+        setTimeout(() => {
+          setSuccess('Test video loaded successfully! Click on the timeline to set your loop points.');
+        }, 1000);
       }
     }
   };
@@ -221,9 +216,15 @@ export default function SongSnips() {
           💔 {error}
         </div>
       )}
+      
+      {success && (
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg shadow-md animate-slide-in">
+          ✅ {success}
+        </div>
+      )}
 
       {/* Compact URL Input with Gradient Border */}
-      <div className="relative p-[2px] rounded-lg bg-gradient-to-r from-primary via-secondary to-accent mb-2">
+      <div className="relative p-[2px] rounded-lg bg-gradient-to-r from-primary via-secondary to-secondary mb-2">
         <div className="flex gap-2 bg-white dark:bg-gray-900 rounded-lg p-1">
           <input
             type="text"
@@ -241,7 +242,7 @@ export default function SongSnips() {
           </button>
           <button
             onClick={handleLoadTestVideo}
-            className="px-3 py-2 bg-gradient-to-r from-secondary/20 to-accent/20 hover:from-secondary/30 hover:to-accent/30 text-secondary dark:text-secondary font-medium text-sm rounded-md transform hover:scale-105 transition-all duration-200"
+            className="px-3 py-2 bg-gradient-to-r from-secondary/10 to-secondary/20 hover:from-secondary/20 hover:to-secondary/30 text-secondary dark:text-secondary font-medium text-sm rounded-md transform hover:scale-105 transition-all duration-200"
             title="Load test video"
           >
             Test
@@ -258,6 +259,7 @@ export default function SongSnips() {
             onStateChange={handleStateChange}
             onError={handleError}
             onDurationChange={handleDurationChange}
+            showDebug={showDebug}
           />
         </div>
       </div>
@@ -266,7 +268,7 @@ export default function SongSnips() {
       <div className="space-y-2">
         {/* Timeline with Glow Effect */}
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20 blur-xl rounded-lg"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-secondary/20 to-secondary/30 blur-xl rounded-lg"></div>
           <div className="relative bg-white dark:bg-gray-800/90 rounded-lg p-3 shadow-lg backdrop-blur-sm">
             <Timeline
               duration={duration}
@@ -337,7 +339,7 @@ export default function SongSnips() {
         </summary>
         <div className="px-4 pb-4 md:px-6 md:pb-6 -mt-2">
           <ol className="list-decimal list-inside space-y-2 text-sm md:text-base text-gray-700 dark:text-gray-300">
-            <li>Paste YouTube URL and tap "Load Video"</li>
+            <li>Paste YouTube URL and tap &ldquo;Load Video&rdquo;</li>
             <li>Tap timeline to set loop start</li>
             <li>Tap again for loop end</li>
             <li>Drag markers to adjust</li>
@@ -354,6 +356,18 @@ export default function SongSnips() {
           {showShortcuts && <KeyboardShortcutsHelp />}
         </div>
       </details>
+
+      {/* Mobile Debug Toggle */}
+      {typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod/i.test(window.navigator.userAgent) && (
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => setShowDebug(!showDebug)}
+            className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            {showDebug ? 'Hide' : 'Show'} Debug Info
+          </button>
+        </div>
+      )}
     </div>
   );
 }

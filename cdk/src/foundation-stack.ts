@@ -39,15 +39,9 @@ export class FoundationStack extends Stack {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
-      versioned: true,
+      versioned: false,
       encryption: s3.BucketEncryption.S3_MANAGED,
-      lifecycleRules: [
-        {
-          id: 'DeleteOldVersions',
-          enabled: true,
-          noncurrentVersionExpiration: Duration.days(7),
-        },
-      ],
+      // No lifecycle rules needed without versioning
     });
 
     // Outputs

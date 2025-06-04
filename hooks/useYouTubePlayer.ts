@@ -74,6 +74,8 @@ export function useYouTubePlayer() {
   const handleError = useCallback((event: any) => {
     let errorMessage = 'Error loading video. ';
     
+    console.error('[YouTube Hook] Error code:', event.data);
+    
     switch (event.data) {
       case 2:
         errorMessage += 'Invalid video ID. Please check the URL.';
@@ -87,6 +89,9 @@ export function useYouTubePlayer() {
       case 101:
       case 150:
         errorMessage += "The video owner doesn't allow embedded playback.";
+        break;
+      case -1:
+        errorMessage = 'Failed to initialize player. Please refresh the page and try again.';
         break;
       default:
         errorMessage += 'Please check the URL and try again.';

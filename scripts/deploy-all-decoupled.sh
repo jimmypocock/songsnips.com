@@ -27,28 +27,28 @@ fi
 # Check if foundation exists
 FOUNDATION_EXISTS=$(aws cloudformation describe-stacks --stack-name "$FOUNDATION_STACK" --region us-east-1 2>&1 | grep -c "$FOUNDATION_STACK" || true)
 
-if [ "$FOUNDATION_EXISTS" -eq 0 ]; then
+if [ "$FOUNDATION_EXISTS" -gt 0 ]; then
+    echo "✅ Foundation stack already exists"
+else
     echo ""
     echo "========================================="
     echo "1/6: Deploying Foundation Stack"
     echo "========================================="
     ./scripts/deploy-foundation.sh $ARGS
-else
-    echo "✅ Foundation stack already exists"
 fi
 
 # Check if certificate exists
 CERT_EXISTS=$(aws cloudformation describe-stacks --stack-name "$CERTIFICATE_STACK" --region us-east-1 2>&1 | grep -c "$CERTIFICATE_STACK" || true)
 
-if [ "$CERT_EXISTS" -eq 0 ]; then
+if [ "$CERT_EXISTS" -gt 0 ]; then
+    echo "✅ Certificate configured"
+else
     echo ""
     echo "========================================="
     echo "2/6: Deploying Certificate Stack"
     echo "========================================="
     echo "⚠️  Certificate creation requires DNS validation!"
     ./scripts/deploy-cert.sh $ARGS
-else
-    echo "✅ Certificate configured"
 fi
 
 # Deploy Edge Functions

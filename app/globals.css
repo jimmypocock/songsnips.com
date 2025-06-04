@@ -42,10 +42,10 @@
   /* Brand colors */
   --primary: #012f49;      /* Deep Navy */
   --primary-hover: #023e5f;
-  --secondary: #f77f00;    /* Vibrant Orange */
-  --secondary-hover: #e06f00;
-  --accent: #2196F3;       /* Bright Blue */
-  --accent-hover: #1976D2;
+  --secondary: #2196F3;    /* Bright Blue - now secondary */
+  --secondary-hover: #1976D2;
+  --accent: #f77f00;       /* Vibrant Orange - now accent for small highlights */
+  --accent-hover: #e06f00;
   --danger: #ef4444;       /* Red */
   --danger-hover: #dc2626;
   --neutral: #6b7280;      /* Gray for text/borders */
@@ -77,10 +77,10 @@
   /* Brand colors (adjusted for dark mode) */
   --primary: #1e4a6d;      /* Lighter Navy for dark mode */
   --primary-hover: #2a5a7f;
-  --secondary: #ff8c1a;    /* Brighter Orange for dark mode */
-  --secondary-hover: #ffa033;
-  --accent: #64b5f6;       /* Light Blue */
-  --accent-hover: #42a5f5;
+  --secondary: #64b5f6;    /* Light Blue - now secondary */
+  --secondary-hover: #42a5f5;
+  --accent: #ff8c1a;       /* Brighter Orange - now accent for small highlights */
+  --accent-hover: #ffa033;
   --danger: #f87171;       /* Light Red */
   --danger-hover: #ef4444;
   --neutral: #94a3b8;      /* Lighter gray for dark mode */
@@ -203,11 +203,11 @@ body::before {
   height: 350px;
   bottom: -10%;
   left: -10%;
-  background: radial-gradient(circle at center, rgba(247, 127, 0, 0.3) 0%, rgba(255, 140, 26, 0.2) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(33, 150, 243, 0.3) 0%, rgba(100, 181, 246, 0.2) 50%, transparent 70%);
 }
 
 [data-theme="dark"] .orb2 {
-  background: radial-gradient(circle at center, rgba(255, 140, 26, 0.4) 0%, rgba(255, 160, 51, 0.2) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(100, 181, 246, 0.4) 0%, rgba(66, 165, 245, 0.2) 50%, transparent 70%);
 }
 
 .orb3 {
@@ -281,8 +281,8 @@ body::before {
 
 /* Glow pulse */
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(247, 127, 0, 0.5); }
-  50% { box-shadow: 0 0 40px rgba(247, 127, 0, 0.8); }
+  0%, 100% { box-shadow: 0 0 20px rgba(33, 150, 243, 0.5); }
+  50% { box-shadow: 0 0 40px rgba(33, 150, 243, 0.8); }
 }
 
 .animate-glow {

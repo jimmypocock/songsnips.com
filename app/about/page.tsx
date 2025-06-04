@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function About() {
   return (
@@ -6,8 +7,14 @@ export default function About() {
       {/* Navigation */}
       <nav className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">
-            SongSnips
+          <Link href="/">
+            <Image 
+              src="/images/logo.webp" 
+              alt="SongSnips Logo" 
+              width="150" 
+              height="50" 
+              className="h-10 w-auto"
+            />
           </Link>
           <div className="flex items-center gap-6">
             <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">
@@ -35,7 +42,7 @@ export default function About() {
 
               <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Our Mission</h2>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
-                SongSnips was created to help musicians, language learners, dancers, and anyone who needs to practice specific sections of videos repeatedly. We believe that focused practice on challenging sections is the key to mastery, and we've made it as simple as clicking on a timeline.
+                SongSnips was created to help musicians, language learners, dancers, and anyone who needs to practice specific sections of videos repeatedly. We believe that focused practice on challenging sections is the key to mastery, and we&apos;ve made it as simple as clicking on a timeline.
               </p>
 
               <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Why SongSnips?</h2>
@@ -80,7 +87,7 @@ export default function About() {
 
               <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Privacy & Security</h2>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
-                SongSnips respects your privacy. We don't store any of your viewing history or personal data. Videos are played directly from YouTube through their official API, ensuring all content remains secure and respects the original creator's settings.
+                SongSnips respects your privacy. We don&apos;t store any of your viewing history or personal data. Videos are played directly from YouTube through their official API, ensuring all content remains secure and respects the original creator&apos;s settings.
               </p>
 
               <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Get Started</h2>
