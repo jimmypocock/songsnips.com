@@ -8,6 +8,7 @@ interface KeyboardShortcutsProps {
   onClearLoop: () => void;
   onSeek: (delta: number) => void;
   onSetLoopPoint: (type: 'start' | 'end') => void;
+  onSpeedChange?: (delta: number) => void;
   isEnabled?: boolean;
 }
 
@@ -17,6 +18,7 @@ export default function KeyboardShortcuts({
   onClearLoop,
   onSeek,
   onSetLoopPoint,
+  onSpeedChange,
   isEnabled = true,
 }: KeyboardShortcutsProps) {
   useEffect(() => {
@@ -33,11 +35,11 @@ export default function KeyboardShortcuts({
           e.preventDefault();
           onPlayPause();
           break;
-        case '[':
+        case 'a':
           e.preventDefault();
           onSetLoopPoint('start');
           break;
-        case ']':
+        case 'b':
           e.preventDefault();
           onSetLoopPoint('end');
           break;
@@ -57,12 +59,24 @@ export default function KeyboardShortcuts({
           e.preventDefault();
           onSeek(e.shiftKey ? 1 : 5);
           break;
+        case 'arrowup':
+          e.preventDefault();
+          if (onSpeedChange) {
+            onSpeedChange(0.1); // Increase speed by 0.1x
+          }
+          break;
+        case 'arrowdown':
+          e.preventDefault();
+          if (onSpeedChange) {
+            onSpeedChange(-0.1); // Decrease speed by 0.1x
+          }
+          break;
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [onPlayPause, onStop, onClearLoop, onSeek, onSetLoopPoint, isEnabled]);
+  }, [onPlayPause, onStop, onClearLoop, onSeek, onSetLoopPoint, onSpeedChange, isEnabled]);
 
   return null;
 }
@@ -74,12 +88,13 @@ export function KeyboardShortcutsHelp() {
       <h4 className="font-semibold text-sm mb-2 text-[#012f49] dark:text-gray-300">Keyboard Shortcuts:</h4>
       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600 dark:text-gray-400">
         <div><kbd className="px-2 py-1 bg-[#012f49] text-white dark:bg-gray-700 rounded font-mono">Space</kbd> Play/Pause</div>
-        <div><kbd className="px-2 py-1 bg-[#012f49] text-white dark:bg-gray-700 rounded font-mono">[</kbd> Set Loop Start</div>
-        <div><kbd className="px-2 py-1 bg-[#012f49] text-white dark:bg-gray-700 rounded font-mono">]</kbd> Set Loop End</div>
+        <div><kbd className="px-2 py-1 bg-[#012f49] text-white dark:bg-gray-700 rounded font-mono">A</kbd> Set Loop Start</div>
+        <div><kbd className="px-2 py-1 bg-[#012f49] text-white dark:bg-gray-700 rounded font-mono">B</kbd> Set Loop End</div>
         <div><kbd className="px-2 py-1 bg-[#012f49] text-white dark:bg-gray-700 rounded font-mono">←/→</kbd> Seek 5s</div>
-        <div><kbd className="px-2 py-1 bg-[#012f49] text-white dark:bg-gray-700 rounded font-mono">Shift + ←/→</kbd> Seek 1s</div>
+        <div><kbd className="px-2 py-1 bg-[#012f49] text-white dark:bg-gray-700 rounded font-mono">↑/↓</kbd> Adjust Speed</div>
         <div><kbd className="px-2 py-1 bg-[#012f49] text-white dark:bg-gray-700 rounded font-mono">C</kbd> Clear Loop</div>
         <div><kbd className="px-2 py-1 bg-[#012f49] text-white dark:bg-gray-700 rounded font-mono">R</kbd> Reset to Start</div>
+        <div><kbd className="px-2 py-1 bg-[#012f49] text-white dark:bg-gray-700 rounded font-mono">Shift + ←/→</kbd> Seek 1s</div>
       </div>
     </div>
   );

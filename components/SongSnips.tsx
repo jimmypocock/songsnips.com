@@ -186,6 +186,11 @@ export default function SongSnips() {
     setLoopPoint(type, currentTime);
   };
 
+  const handleSpeedChangeKeyboard = (delta: number) => {
+    const newSpeed = Math.max(0.25, Math.min(2, playbackSpeed + delta));
+    handleSpeedChange(newSpeed);
+  };
+
   const hasLoopPoints = loopPoints.start !== null && loopPoints.end !== null;
 
   return (
@@ -196,6 +201,7 @@ export default function SongSnips() {
         onClearLoop={clearLoop}
         onSeek={handleSeek}
         onSetLoopPoint={handleSetLoopPointAtCurrentTime}
+        onSpeedChange={handleSpeedChangeKeyboard}
       />
 
       {/* Error Messages Only */}
