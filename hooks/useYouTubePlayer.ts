@@ -126,7 +126,7 @@ export function useYouTubePlayer() {
   }, [player, loopPoints.start]);
 
   // Set loop point
-  const setLoopPoint = useCallback((type: 'start' | 'end', time: number) => {
+  const setLoopPoint = useCallback((type: 'start' | 'end', time: number, enablePreview: boolean = true) => {
     setLoopPoints(prev => {
       const newPoints = { ...prev };
       
@@ -138,6 +138,11 @@ export function useYouTubePlayer() {
         }
       } else {
         newPoints.end = time;
+        // When dragging end marker, seek to 3 seconds before to preview
+        if (enablePreview && player && player.seekTo) {
+          const previewStart = Math.max(0, time - 3);
+          player.seekTo(previewStart);
+        }
       }
       
       // Auto-enable looping when both points are set
@@ -147,7 +152,7 @@ export function useYouTubePlayer() {
       
       return newPoints;
     });
-  }, []);
+  }, [player]);
 
   // Clear loop
   const clearLoop = useCallback(() => {

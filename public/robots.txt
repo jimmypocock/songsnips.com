@@ -10,4 +10,4 @@ Allow: /
 User-agent: Mediapartners-Google
 Allow: /
 
-Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://songsnips.com/sitemap.xml

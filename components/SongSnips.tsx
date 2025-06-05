@@ -9,10 +9,13 @@ import LoopCounter from './LoopCounter';
 import SpeedControl from './SpeedControl';
 import KeyboardShortcuts, { KeyboardShortcutsHelp } from './KeyboardShortcuts';
 import ShareLoop from './ShareLoop';
+import SavedLoops from './SavedLoops';
 import { useYouTubePlayer } from '@/hooks/useYouTubePlayer';
+import { useLoopMemory } from '@/hooks/useLoopMemory';
 
 export default function SongSnips() {
   const [videoUrl, setVideoUrl] = useState('');
+  const [currentVideoId, setCurrentVideoId] = useState<string | null>(null);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
@@ -37,6 +40,9 @@ export default function SongSnips() {
     setError,
   } = useYouTubePlayer();
 
+  // Use loop memory hook
+  const { savedLoops, saveLoop, deleteLoop, updateLoopName } = useLoopMemory(currentVideoId);
+
   // Load from URL parameters on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -48,6 +54,7 @@ export default function SongSnips() {
       if (videoId) {
         const url = `https://youtube.com/watch?v=${videoId}`;
         setVideoUrl(url);
+        setCurrentVideoId(videoId);
 
         // Auto-load the video after a short delay
         setTimeout(() => {
@@ -83,6 +90,7 @@ export default function SongSnips() {
       if (videoId) {
         clearLoop();
         setError(null);
+        setCurrentVideoId(videoId);
       } else {
         setError('Please enter a valid YouTube URL');
       }
@@ -99,6 +107,7 @@ export default function SongSnips() {
       if (videoId) {
         clearLoop();
         setError(null);
+        setCurrentVideoId(videoId);
       }
     }
   };
@@ -140,14 +149,8 @@ export default function SongSnips() {
     if (isDragging) {
       // Smart playback position handling when dragging
       if (type === 'end') {
-        // When adjusting end point
-        if (time < currentTime) {
-          // If new end is before current position, jump to loop start
-          if (loopPoints.start !== null) {
-            seekTo(loopPoints.start);
-          }
-        }
-        // Otherwise, don't interrupt playback
+        // When adjusting end point, preview mode is auto-enabled in the hook
+        // No need to manually adjust position, hook handles it
       } else if (type === 'start') {
         // When adjusting start point
         if (time > currentTime) {
@@ -192,6 +195,25 @@ export default function SongSnips() {
   };
 
   const hasLoopPoints = loopPoints.start !== null && loopPoints.end !== null;
+
+  // Handle loading a saved loop
+  const handleLoadSavedLoop = (loop: { start: number; end: number }) => {
+    setLoopPoint('start', loop.start, false);
+    setLoopPoint('end', loop.end, false); // false = don't enable preview mode
+    seekTo(loop.start);
+  };
+
+  // Auto-save current loop when user leaves page
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (hasLoopPoints && loopPoints.start !== null && loopPoints.end !== null) {
+        saveLoop(loopPoints.start, loopPoints.end, 'Last session');
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasLoopPoints, loopPoints, saveLoop]);
 
   return (
     <div className="max-w-4xl mx-auto space-y-4 md:space-y-6 px-2 md:px-0">
@@ -271,13 +293,34 @@ export default function SongSnips() {
 
         {/* Core Controls - Immediately accessible */}
         <div className="bg-white dark:bg-gray-800/50 rounded-lg p-3 shadow">
-          <ControlButtons
-            onPlayPause={togglePlayPause}
-            onStop={stopPlayback}
-            onClearLoop={clearLoop}
-            hasLoopPoints={hasLoopPoints}
-            isPlaying={isPlaying}
-          />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1">
+              <ControlButtons
+                onPlayPause={togglePlayPause}
+                onStop={stopPlayback}
+                onClearLoop={clearLoop}
+                hasLoopPoints={hasLoopPoints}
+                isPlaying={isPlaying}
+              />
+            </div>
+            {currentVideoId && (
+              <div className="flex items-center gap-2">
+                <ShareLoop
+                  videoUrl={videoUrl}
+                  loopStart={loopPoints.start}
+                  loopEnd={loopPoints.end}
+                />
+                <SavedLoops
+                  savedLoops={savedLoops}
+                  currentLoop={loopPoints}
+                  onSaveLoop={saveLoop}
+                  onLoadLoop={handleLoadSavedLoop}
+                  onDeleteLoop={deleteLoop}
+                  onUpdateLoopName={updateLoopName}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -308,54 +351,41 @@ export default function SongSnips() {
             />
           </div>
 
-          <div className="flex justify-center">
-            <ShareLoop
-              videoUrl={videoUrl}
-              loopStart={loopPoints.start}
-              loopEnd={loopPoints.end}
-            />
-          </div>
         </div>
       </div>
 
-      {/* Instructions - Collapsible on Mobile */}
-      <details className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary rounded-lg">
-        <summary className="p-4 md:p-6 cursor-pointer">
-          <h3 className="inline text-base md:text-lg font-semibold text-primary dark:text-accent">
-            How to Use
-          </h3>
-        </summary>
-        <div className="px-4 pb-4 md:px-6 md:pb-6 -mt-2">
-          <ol className="list-decimal list-inside space-y-2 text-sm md:text-base text-gray-700 dark:text-gray-300">
-            <li>Paste YouTube URL and tap &ldquo;Load Video&rdquo;</li>
-            <li>Tap timeline to set loop start</li>
-            <li>Tap again for loop end</li>
-            <li>Drag markers to adjust</li>
-          </ol>
-          <div className="mt-4 space-y-1 text-xs md:text-sm text-gray-600 dark:text-gray-400">
-            <p><strong>Tip:</strong> Use quick loop buttons for instant loops</p>
-          </div>
-          <button
-            onClick={() => setShowShortcuts(!showShortcuts)}
-            className="mt-3 text-xs md:text-sm text-secondary hover:text-secondary-hover dark:text-secondary dark:hover:text-secondary-hover font-medium underline underline-offset-2"
-          >
-            {showShortcuts ? 'Hide' : 'Show'} Keyboard Shortcuts
-          </button>
-          {showShortcuts && <KeyboardShortcutsHelp />}
+      {/* Instructions */}
+      <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary rounded-lg p-4 md:p-6">
+        <h3 className="text-base md:text-lg font-semibold text-primary dark:text-accent mb-4">
+          How to Use
+        </h3>
+        <ol className="list-decimal list-inside space-y-2 text-sm md:text-base text-gray-700 dark:text-gray-300">
+          <li>Paste YouTube URL and tap &ldquo;Load Video&rdquo;</li>
+          <li>Tap timeline to set loop start</li>
+          <li>Tap again for loop end</li>
+          <li>Drag markers to adjust</li>
+        </ol>
+        <div className="mt-4 space-y-1 text-xs md:text-sm text-gray-600 dark:text-gray-400">
+          <p><strong>Tip:</strong> Use quick loop buttons for instant loops</p>
         </div>
-      </details>
+        <button
+          onClick={() => setShowShortcuts(!showShortcuts)}
+          className="mt-3 text-xs md:text-sm text-secondary hover:text-secondary-hover dark:text-secondary dark:hover:text-secondary-hover font-medium underline underline-offset-2"
+        >
+          {showShortcuts ? 'Hide' : 'Show'} Keyboard Shortcuts
+        </button>
+        {showShortcuts && <KeyboardShortcutsHelp />}
+      </div>
 
-      {/* Mobile Debug Toggle */}
-      {typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod/i.test(window.navigator.userAgent) && (
-        <div className="mt-4 text-center">
-          <button
-            onClick={() => setShowDebug(!showDebug)}
-            className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          >
-            {showDebug ? 'Hide' : 'Show'} Debug Info
-          </button>
-        </div>
-      )}
+      {/* Debug Toggle - Always show for testing */}
+      <div className="mt-4 text-center">
+        <button
+          onClick={() => setShowDebug(!showDebug)}
+          className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          {showDebug ? 'Hide' : 'Show'} Debug Info
+        </button>
+      </div>
     </div>
   );
 }

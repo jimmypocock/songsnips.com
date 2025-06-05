@@ -45,20 +45,31 @@ export default function ShareLoop({ videoUrl, loopStart, loopEnd }: ShareLoopPro
     }
   };
 
-  if (!videoUrl || loopStart === null || loopEnd === null) {
-    return null;
-  }
+  const canShare = videoUrl && loopStart !== null && loopEnd !== null;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="relative">
       <button
         onClick={handleCopy}
-        className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-blue-600 text-white rounded-lg transition-all shadow-md hover:shadow-lg"
+        disabled={!canShare}
+        title={canShare ? (copied ? "Link copied!" : "Share this loop") : "Set both loop markers to share"}
+        className={`p-2 rounded-lg transition-colors ${
+          canShare
+            ? copied 
+              ? 'bg-green-500 text-white'
+              : 'bg-accent hover:bg-blue-600 text-white'
+            : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+        }`}
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.032 4.026a9.001 9.001 0 01-7.432 0m9.032-4.026A9.001 9.001 0 0112 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9a9.001 9.001 0 00-1.684-5.316m-7.432 0a3 3 0 110 2.684" />
-        </svg>
-        {copied ? 'Copied!' : 'Share Loop'}
+        {copied && canShare ? (
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>
+        ) : (
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+          </svg>
+        )}
       </button>
     </div>
   );

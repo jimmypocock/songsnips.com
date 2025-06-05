@@ -60,9 +60,6 @@ export default function GoogleCMP() {
     localStorage.setItem('cookie-consent', 'accepted');
     setShowBanner(false);
     setShowManageOptions(false);
-    
-    // Reload to initialize ads with consent
-    window.location.reload();
   };
 
   const handleManageOptions = () => {
@@ -75,10 +72,6 @@ export default function GoogleCMP() {
     localStorage.setItem('cookie-consent', settings.ad_storage === 'granted' ? 'accepted' : 'declined');
     setShowBanner(false);
     setShowManageOptions(false);
-    
-    if (settings.ad_storage === 'granted') {
-      window.location.reload();
-    }
   };
 
   if (!showBanner && !showManageOptions) return null;

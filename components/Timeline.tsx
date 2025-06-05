@@ -142,16 +142,29 @@ export default function Timeline({
         {/* Background track */}
         <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700" />
         
-        {/* Subtle progress indicator - thin line at bottom */}
-        <div
-          className="absolute bottom-0 left-0 h-1 bg-blue-500/50 dark:bg-blue-400/50 transition-all duration-100"
-          style={{ width: `${progressPercent}%` }}
-        />
+        
+        {/* Progress indicator - shows progress within loop when looping, full timeline otherwise */}
+        {loopStart !== null && loopEnd !== null ? (
+          // When loop is active, show progress within the loop region
+          <div
+            className="absolute top-0 h-2 bg-blue-500/60 dark:bg-blue-400/60 transition-all duration-100"
+            style={{
+              left: `${loopStartPercent}%`,
+              width: `${Math.max(0, Math.min(progressPercent - loopStartPercent, loopEndPercent - loopStartPercent))}%`
+            }}
+          />
+        ) : (
+          // Normal progress indicator when no loop
+          <div
+            className="absolute bottom-0 left-0 h-1 bg-blue-500/50 dark:bg-blue-400/50 transition-all duration-100"
+            style={{ width: `${progressPercent}%` }}
+          />
+        )}
 
         {/* Loop region with visible overlay */}
         {loopStart !== null && loopEnd !== null && (
           <div
-            className="absolute inset-y-0 bg-orange-500/30 dark:bg-orange-400/40 border-x-2 border-orange-500/60 z-[1]"
+            className="absolute inset-y-0 bg-orange-500/30 dark:bg-orange-400/40 border-x-2 border-orange-500/60 z-[2]"
             style={{
               left: `${loopStartPercent}%`,
               width: `${loopWidth}%`,
@@ -162,7 +175,7 @@ export default function Timeline({
         {/* Loop start handle - small circle */}
         {loopStart !== null && (
           <div
-            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-orange-500 dark:bg-orange-400 rounded-full cursor-ew-resize shadow-lg hover:scale-125 active:scale-110 transition-transform duration-200 touch-manipulation z-[2]"
+            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-orange-500 dark:bg-orange-400 rounded-full cursor-ew-resize shadow-lg hover:scale-125 active:scale-110 transition-transform duration-200 touch-manipulation z-[3]"
             style={{ left: `${loopStartPercent}%` }}
             onMouseDown={(e) => handleDragStart(e, 'start')}
             onTouchStart={(e) => handleTouchStart(e, 'start')}
@@ -174,7 +187,7 @@ export default function Timeline({
         {/* Loop end handle - small circle */}
         {loopEnd !== null && (
           <div
-            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-orange-500 dark:bg-orange-400 rounded-full cursor-ew-resize shadow-lg hover:scale-125 active:scale-110 transition-transform duration-200 touch-manipulation z-[2]"
+            className="loop-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-orange-500 dark:bg-orange-400 rounded-full cursor-ew-resize shadow-lg hover:scale-125 active:scale-110 transition-transform duration-200 touch-manipulation z-[3]"
             style={{ left: `${loopEndPercent}%` }}
             onMouseDown={(e) => handleDragStart(e, 'end')}
             onTouchStart={(e) => handleTouchStart(e, 'end')}

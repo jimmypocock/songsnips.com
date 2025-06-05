@@ -1,51 +1,22 @@
-import Link from "next/link";
-import Image from "next/image";
 import SongSnips from "@/components/SongSnips";
-import ThemeToggle from "@/components/ThemeToggle";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "SongSnips - Loop YouTube Videos for Practice",
+  description: "Free YouTube video looper for musicians, dancers, and language learners. Loop any section of a YouTube video with precision. No sign-up required.",
+  keywords: "youtube looper, video loop, music practice, loop youtube, ab repeat, section repeat, practice tool",
+  openGraph: {
+    title: "SongSnips - Loop YouTube Videos for Practice",
+    description: "Free YouTube video looper for musicians, dancers, and language learners. Loop any section of a YouTube video with precision.",
+    type: "website",
+    url: "https://songsnips.com",
+  },
+};
 
 export default function Home() {
   return (
-    <>
-      {/* Header with Theme Toggle */}
-      <header className="border-b border-gray-200 dark:border-gray-800">
-        <div className="h-0.5 bg-gradient-to-r from-primary via-secondary to-secondary"></div>
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-          <>
-            <Image 
-              src="/images/logo.webp" 
-              alt="SongSnips Logo" 
-              width={150} 
-              height={50} 
-              className="h-10 w-auto dark:hidden"
-            />
-            <Image 
-              src="/images/logo-white.webp" 
-              alt="SongSnips Logo" 
-              width={150} 
-              height={50} 
-              className="h-10 w-auto hidden dark:block"
-            />
-          </>
-          <div className="flex items-center gap-4">
-            <Link href="/how-it-works" className="text-sm text-gray-600 dark:text-gray-400 hover:text-secondary px-2 py-1 rounded-md hover:bg-secondary/10 transition-all duration-200">
-              Help
-            </Link>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content - Compact */}
-      <main className="relative z-10 max-w-4xl mx-auto px-2 sm:px-4 py-4 pb-20">
-        <SongSnips />
-      </main>
-
-      {/* Minimal Footer */}
-      <footer className="mt-auto py-4 text-center text-xs text-gray-500">
-        <Link href="/privacy" className="hover:text-secondary">Privacy</Link>
-        <span className="mx-2">•</span>
-        <Link href="/terms" className="hover:text-secondary">Terms</Link>
-      </footer>
-    </>
+    <main className="relative z-10 max-w-4xl mx-auto px-2 sm:px-4 py-8">
+      <SongSnips />
+    </main>
   );
 }

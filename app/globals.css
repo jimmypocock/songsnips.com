@@ -175,49 +175,53 @@ body::before {
 .gradient-orb {
   position: fixed;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(100px);
   z-index: -1;
   pointer-events: none;
-  opacity: 0.3;
+  opacity: 0.5;
   overflow: hidden;
+  /* animation: float 20s ease-in-out infinite; */
 }
 
 [data-theme="dark"] .gradient-orb {
-  opacity: 0.4;
+  opacity: 0.6;
+  filter: blur(120px);
 }
 
 .orb1 {
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
   top: -10%;
   right: -200px;
-  background: radial-gradient(circle at center, rgba(1, 47, 73, 0.3) 0%, rgba(33, 150, 243, 0.2) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(33, 150, 243, 0.6) 0%, rgba(25, 118, 210, 0.3) 40%, transparent 70%);
+  animation-delay: 0s;
 }
 
 [data-theme="dark"] .orb1 {
-  background: radial-gradient(circle at center, rgba(33, 150, 243, 0.4) 0%, rgba(100, 181, 246, 0.2) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(100, 181, 246, 0.7) 0%, rgba(66, 165, 245, 0.3) 40%, transparent 70%);
 }
 
 .orb2 {
-  width: 350px;
-  height: 350px;
+  width: 450px;
+  height: 450px;
   bottom: -10%;
   left: -10%;
-  background: radial-gradient(circle at center, rgba(33, 150, 243, 0.3) 0%, rgba(100, 181, 246, 0.2) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(25, 118, 210, 0.5) 0%, rgba(33, 150, 243, 0.3) 40%, transparent 70%);
+  animation-delay: 5s;
 }
 
 [data-theme="dark"] .orb2 {
-  background: radial-gradient(circle at center, rgba(100, 181, 246, 0.4) 0%, rgba(66, 165, 245, 0.2) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(66, 165, 245, 0.6) 0%, rgba(100, 181, 246, 0.3) 40%, transparent 70%);
 }
 
 .orb3 {
-  width: 300px;
-  height: 300px;
+  width: 400px;
+  height: 400px;
   top: 40%;
-  left: 60%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle at center, rgba(1, 47, 73, 0.25) 0%, rgba(33, 150, 243, 0.15) 40%, transparent 70%);
-  animation-delay: -5s;
+  background: radial-gradient(circle at center, rgba(33, 150, 243, 0.5) 0%, rgba(13, 71, 161, 0.2) 40%, transparent 70%);
+  animation-delay: 10s;
 }
 
 [data-theme="dark"] .orb3 {
@@ -225,17 +229,30 @@ body::before {
 }
 
 /* Additional orb for more effect */
-.gradient-orb.orb4 {
-  width: 250px;
-  height: 250px;
+.orb4 {
+  width: 350px;
+  height: 350px;
   bottom: 20%;
   right: -50px;
-  background: radial-gradient(circle at center, rgba(33, 150, 243, 0.2) 0%, rgba(1, 47, 73, 0.1) 50%, transparent 70%);
-  animation-delay: -15s;
+  background: radial-gradient(circle at center, rgba(13, 71, 161, 0.6) 0%, rgba(33, 150, 243, 0.3) 40%, transparent 70%);
+  animation-delay: 15s;
 }
 
 [data-theme="dark"] .orb4 {
-  background: radial-gradient(circle at center, rgba(100, 181, 246, 0.3) 0%, rgba(30, 74, 109, 0.2) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(144, 202, 249, 0.5) 0%, rgba(66, 165, 245, 0.2) 40%, transparent 70%);
+}
+
+/* Floating animation for orbs */
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.05);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
 }
 
 /* Simple fade in animation for modal */

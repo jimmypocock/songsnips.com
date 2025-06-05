@@ -1,44 +1,30 @@
-import Link from "next/link";
-import Image from "next/image";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'How It Works - SongSnips Tutorial',
+  description: 'Learn how to use SongSnips to loop YouTube videos. Simple 4-step guide for musicians, language learners, and dancers.',
+  keywords: 'how to loop youtube, youtube looper tutorial, songsnips guide, video loop instructions',
+  openGraph: {
+    title: 'How It Works - SongSnips Tutorial',
+    description: 'Learn how to use SongSnips to loop YouTube videos in 4 simple steps.',
+    type: 'website',
+    url: 'https://songsnips.com/how-it-works',
+  },
+};
 
 export default function HowItWorks() {
   return (
-    <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex items-center justify-between">
-          <Link href="/">
-            <Image 
-              src="/images/logo.webp" 
-              alt="SongSnips Logo" 
-              width="150" 
-              height="50" 
-              className="h-10 w-auto"
-            />
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-secondary transition-colors font-medium">
-              Home
-            </Link>
-            <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-secondary dark:hover:text-secondary transition-colors font-medium">
-              About
-            </Link>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-20">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-8 text-center">
-            How It Works
-          </h1>
+    <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-8 text-center">
+          How It Works
+        </h1>
 
           <div className="space-y-8">
             {/* Step 1 */}
             <div className="glass-card p-8 rounded-2xl">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl">
                   1
                 </div>
                 <div className="flex-1">
@@ -49,7 +35,7 @@ export default function HowItWorks() {
                     Simply paste any YouTube URL into the input field and click &ldquo;Load Video&rdquo;. SongSnips will instantly load the video in our player.
                   </p>
                   <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-                    <code className="text-sm text-secondary dark:text-secondary">
+                    <code className="text-sm text-accent dark:text-accent">
                       https://youtube.com/watch?v=your-video-id
                     </code>
                   </div>
@@ -60,7 +46,7 @@ export default function HowItWorks() {
             {/* Step 2 */}
             <div className="glass-card p-8 rounded-2xl">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl">
                   2
                 </div>
                 <div className="flex-1">
@@ -84,7 +70,7 @@ export default function HowItWorks() {
             {/* Step 3 */}
             <div className="glass-card p-8 rounded-2xl">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl">
                   3
                 </div>
                 <div className="flex-1">
@@ -101,7 +87,7 @@ export default function HowItWorks() {
             {/* Step 4 */}
             <div className="glass-card p-8 rounded-2xl">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl">
                   4
                 </div>
                 <div className="flex-1">
@@ -116,25 +102,25 @@ export default function HowItWorks() {
             </div>
 
             {/* Tips Section */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary p-6 rounded-lg mt-12">
-              <h3 className="text-lg font-semibold text-primary dark:text-accent mb-3">
+            <div className="bg-primary/5 dark:bg-primary/10 border-l-4 border-secondary p-6 rounded-lg mt-12">
+              <h3 className="text-lg font-semibold text-primary dark:text-secondary mb-3">
                 Pro Tips
               </h3>
               <ul className="space-y-2 text-gray-700 dark:text-gray-300">
                 <li className="flex items-start gap-2">
-                  <span className="text-secondary">•</span>
+                  <span className="text-accent">•</span>
                   <span>Use keyboard shortcuts: Space to play/pause, Arrow keys to seek</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-secondary">•</span>
+                  <span className="text-accent">•</span>
                   <span>The timeline shows your current position in real-time</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-secondary">•</span>
+                  <span className="text-accent">•</span>
                   <span>Clear your loop anytime to set new practice sections</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-secondary">•</span>
+                  <span className="text-accent">•</span>
                   <span>Works great for music practice, language learning, and tutorials</span>
                 </li>
               </ul>
@@ -171,28 +157,6 @@ export default function HowItWorks() {
             </div>
           </div>
         </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="relative z-10 mt-20 border-t border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-center md:text-left">
-              <p className="text-gray-600 dark:text-gray-400">
-                © {new Date().getFullYear()} SongSnips. Free to use, made with ❤️
-              </p>
-            </div>
-            <div className="flex gap-6">
-              <Link href="/privacy" className="text-gray-600 dark:text-gray-400 hover:text-secondary dark:hover:text-secondary transition-colors">
-                Privacy
-              </Link>
-              <Link href="/terms" className="text-gray-600 dark:text-gray-400 hover:text-secondary dark:hover:text-secondary transition-colors">
-                Terms
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+      </div>
   );
 }

@@ -69,11 +69,32 @@ const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(({ onRead
   const [isPlayerInitialized, setIsPlayerInitialized] = useState(false);
   const [debugInfo, setDebugInfo] = useState<string[]>([]);
   const [scriptLoadFailed, setScriptLoadFailed] = useState(false);
+  const isMobile = typeof window !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   // Add debug log
   const addDebug = useCallback((message: string) => {
     setDebugInfo(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+    console.log(`[SongSnips Debug] ${message}`);
   }, []);
+
+  // Add global error listeners for debugging
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      addDebug(`[Global Error] ${event.message} at ${event.filename}:${event.lineno}`);
+    };
+    
+    const handleSecurityPolicy = (e: SecurityPolicyViolationEvent) => {
+      addDebug(`[CSP Violation] ${e.violatedDirective} - ${e.blockedURI}`);
+    };
+    
+    window.addEventListener('error', handleError);
+    document.addEventListener('securitypolicyviolation', handleSecurityPolicy);
+    
+    return () => {
+      window.removeEventListener('error', handleError);
+      document.removeEventListener('securitypolicyviolation', handleSecurityPolicy);
+    };
+  }, [addDebug]);
 
   // Initialize YouTube API and player on demand
   const initializePlayer = useCallback(() => {
@@ -109,24 +130,33 @@ const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(({ onRead
         addDebug(`[YouTube] Secure context: ${window.isSecureContext}`);
         addDebug(`[YouTube] Protocol: ${window.location.protocol}`);
         
-        // Check for CSP meta tag
-        const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
-        if (cspMeta) {
-          addDebug(`[YouTube] CSP meta tag found: ${cspMeta.getAttribute('content')?.substring(0, 100)}...`);
+        // Check for existing YouTube scripts
+        const existingScript = document.querySelector('script[src*="youtube.com/iframe_api"]');
+        if (existingScript) {
+          addDebug('[YouTube] Found existing YouTube script');
+          return;
         }
         
-        // Method 1: Direct script injection with explicit protocol
-        const script = `
-          var tag = document.createElement('script');
-          tag.id = 'youtube-iframe-api';
-          tag.src = 'https://www.youtube.com/iframe_api';
-          tag.crossOrigin = 'anonymous';
-          document.head.appendChild(tag);
-        `;
+        // Direct approach for mobile without delay or string injection
+        addDebug('[YouTube] Using direct script injection for mobile');
         
-        const scriptEl = document.createElement('script');
-        scriptEl.text = script;
-        document.head.appendChild(scriptEl);
+        const tag = document.createElement('script');
+        tag.id = 'youtube-iframe-api';
+        tag.src = 'https://www.youtube.com/iframe_api';
+        tag.async = true;
+        
+        tag.onload = () => {
+          addDebug('[YouTube] Script tag loaded successfully');
+        };
+        
+        tag.onerror = (error) => {
+          addDebug(`[YouTube] Script load error: ${JSON.stringify(error)}`);
+          setScriptLoadFailed(true);
+        };
+        
+        // Add to body instead of head for mobile
+        document.body.appendChild(tag);
+        addDebug('[YouTube] Script tag appended to body');
         
         // Set up callback
         window.onYouTubeIframeAPIReady = () => {
@@ -150,6 +180,12 @@ const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(({ onRead
         }, 500);
       } else {
         // Desktop loading method
+        const existingScript = document.querySelector('script[src*="youtube.com/iframe_api"]');
+        if (existingScript) {
+          addDebug('[YouTube] Found existing YouTube script on desktop');
+          return;
+        }
+        
         window.onYouTubeIframeAPIReady = () => {
           addDebug('[YouTube] Desktop API ready!');
           setIsAPIReady(true);
@@ -166,12 +202,18 @@ const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(({ onRead
         
         tag.onload = () => {
           addDebug('[YouTube] Script tag loaded');
-          setTimeout(() => {
-            if (window.YT && window.YT.Player && !isAPIReady) {
-              addDebug('[YouTube] Found YT object, setting API ready');
-              setIsAPIReady(true);
-            }
-          }, 1000);
+          // Check immediately and after a delay
+          if (window.YT && window.YT.Player) {
+            addDebug('[YouTube] YT object available immediately');
+            setIsAPIReady(true);
+          } else {
+            setTimeout(() => {
+              if (window.YT && window.YT.Player && !isAPIReady) {
+                addDebug('[YouTube] Found YT object after delay');
+                setIsAPIReady(true);
+              }
+            }, 1000);
+          }
         };
         
         document.body.appendChild(tag);
@@ -242,6 +284,14 @@ const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(({ onRead
     return match ? match[1] : null;
   };
 
+  // Initialize player eagerly on mobile
+  useEffect(() => {
+    if (isMobile && !isPlayerInitialized) {
+      addDebug('[YouTube] Mobile detected, initializing player eagerly');
+      initializePlayer();
+    }
+  }, [isMobile, isPlayerInitialized, initializePlayer, addDebug]);
+
   // Load video function - initialize player if needed
   const loadVideo = useCallback((url: string) => {
     const extractedVideoId = extractVideoId(url);
@@ -250,8 +300,8 @@ const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(({ onRead
     setVideoId(extractedVideoId);
     
     
-    // Initialize player on first video load
-    if (!isPlayerInitialized) {
+    // Initialize player on first video load (desktop only, mobile already initialized)
+    if (!isPlayerInitialized && !isMobile) {
       initializePlayer();
       // The video will be loaded once the player is ready
       return extractedVideoId;
@@ -261,7 +311,7 @@ const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(({ onRead
       playerRef.current.loadVideoById(extractedVideoId);
     }
     return extractedVideoId;
-  }, [isPlayerInitialized, initializePlayer]);
+  }, [isPlayerInitialized, initializePlayer, isMobile]);
 
   // Get player instance
   const getPlayer = useCallback(() => {

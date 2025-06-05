@@ -16,7 +16,7 @@ export default function ControlButtons({
   isPlaying = false,
 }: ControlButtonsProps) {
   return (
-    <div className="flex gap-2 justify-center">
+    <div className="flex gap-2 justify-start">
       {/* Play/Pause Button - Green for Play, Yellow for Pause */}
       <button
         onClick={onPlayPause}
