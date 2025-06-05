@@ -8,6 +8,7 @@ import { CdnStack } from './cdn-stack';
 import { WafStack } from './waf-stack';
 import { MonitoringStack } from './monitoring-stack';
 import { AppStack } from './app-stack';
+import { ApiStack } from './api-stack';
 
 const app = new cdk.App();
 
@@ -82,7 +83,15 @@ const monitoringStack = new MonitoringStack(app, `${stackPrefix}-Monitoring`, {
 // Add dependency
 monitoringStack.addDependency(cdnStack);
 
-// 7. App Stack - Application deployment
+// 7. API Stack - YouTube search API
+const apiStack = new ApiStack(app, `${stackPrefix}-API`, {
+  domainName: domainName,
+  alertEmail: notificationEmail,
+  env: usEast1Env,
+  description: `YouTube search API for ${appName}`,
+});
+
+// 8. App Stack - Application deployment
 const appStack = new AppStack(app, `${stackPrefix}-App`, {
   websiteBucketName: `${domainName}-app`,
   cdnStackName: `${stackPrefix}-CDN`,

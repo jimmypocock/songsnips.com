@@ -10,6 +10,7 @@ import SpeedControl from './SpeedControl';
 import KeyboardShortcuts, { KeyboardShortcutsHelp } from './KeyboardShortcuts';
 import ShareLoop from './ShareLoop';
 import SavedLoops from './SavedLoops';
+import UnifiedSearch from './UnifiedSearch';
 import { useYouTubePlayer } from '@/hooks/useYouTubePlayer';
 import { useLoopMemory } from '@/hooks/useLoopMemory';
 
@@ -78,23 +79,32 @@ export default function SongSnips() {
   }, [setLoopPoint]);
 
 
-  // Load video
-  const handleLoadVideo = () => {
-    if (!videoUrl.trim()) {
+  // Load video from URL
+  const handleLoadVideo = (url: string = videoUrl) => {
+    const urlToLoad = url || videoUrl;
+    if (!urlToLoad.trim()) {
       setError('Please enter a YouTube URL');
       return;
     }
 
     if (playerComponentRef.current) {
-      const videoId = playerComponentRef.current.loadVideo(videoUrl);
+      const videoId = playerComponentRef.current.loadVideo(urlToLoad);
       if (videoId) {
         clearLoop();
         setError(null);
         setCurrentVideoId(videoId);
+        setVideoUrl(''); // Clear input after successful load
       } else {
         setError('Please enter a valid YouTube URL');
       }
     }
+  };
+
+  // Load video from search result
+  const handleVideoSelect = (videoId: string) => {
+    const url = `https://www.youtube.com/watch?v=${videoId}`;
+    setVideoUrl(url);
+    handleLoadVideo(url);
   };
 
   // Load test video
@@ -233,32 +243,11 @@ export default function SongSnips() {
         </div>
       )}
 
-      {/* Compact URL Input with Gradient Border */}
-      <div className="relative p-[2px] rounded-lg bg-gradient-to-r from-primary via-secondary to-secondary mb-2">
-        <div className="flex gap-2 bg-white dark:bg-gray-900 rounded-lg p-1">
-          <input
-            type="text"
-            value={videoUrl}
-            onChange={(e) => setVideoUrl(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleLoadVideo()}
-            placeholder="YouTube URL 🎶"
-            className="flex-1 px-3 py-2 rounded-md focus:outline-none bg-transparent text-sm placeholder-gray-400"
-          />
-          <button
-            onClick={handleLoadVideo}
-            className="px-4 py-2 bg-gradient-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white font-medium rounded-md text-sm whitespace-nowrap transform hover:scale-105 transition-all duration-200 shadow-sm"
-          >
-            Load ✨
-          </button>
-          <button
-            onClick={handleLoadTestVideo}
-            className="px-3 py-2 bg-gradient-to-r from-secondary/10 to-secondary/20 hover:from-secondary/20 hover:to-secondary/30 text-secondary dark:text-secondary font-medium text-sm rounded-md transform hover:scale-105 transition-all duration-200"
-            title="Load test video"
-          >
-            Test
-          </button>
-        </div>
-      </div>
+      {/* Unified Search - Handles both API and external search */}
+      <UnifiedSearch 
+        onVideoSelect={handleVideoSelect}
+        onUrlSubmit={handleLoadVideo}
+      />
 
       {/* Compact YouTube Player */}
       <div className="relative max-w-full">

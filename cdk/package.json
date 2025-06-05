@@ -12,7 +12,11 @@
     "diff": "npm run build && cdk diff",
     "synth": "npm run build && cdk synth",
     "validate": "npm run build && npx ts-node --prefer-ts-exts src/validate-stacks.ts",
-    "predeploy": "npm run validate"
+    "predeploy": "npm run validate",
+    "deploy:api": "../scripts/deploy-api.sh",
+    "deploy:api:only": "../scripts/api-commands.sh deploy",
+    "diff:api": "../scripts/api-commands.sh diff",
+    "destroy:api": "../scripts/api-commands.sh destroy"
   },
   "devDependencies": {
     "@types/node": "20.11.5",

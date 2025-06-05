@@ -50,6 +50,36 @@ Based on competitive analysis of 15+ YouTube looping tools, these 5 improvements
 - [x] Ensure speed persists when loop restarts
 - **Rationale**: Musicians need precise speed control for progressive practice methodology.
 
+#### **Infrastructure** - YouTube Search API Backend (8-10 hours) ✅
+
+##### Phase 1: AWS Infrastructure Setup (3-4 hours) ✅
+- [x] Create new API CDK stack (api-stack.ts)
+- [x] Set up API Gateway REST API with CORS
+- [x] Create Lambda functions for search and quota status
+- [x] Set up DynamoDB table for quota tracking
+- [x] Configure AWS Secrets Manager for YouTube API key
+- [x] Update CDN stack to add /api/* behavior (cdn-stack-v2.ts ready, needs integration)
+- [x] Set up CloudWatch monitoring and alarms
+
+##### Phase 2: Backend Implementation (2-3 hours) ✅
+- [x] Implement search Lambda with YouTube API v3 integration
+- [x] Add quota checking and tracking logic
+- [x] Implement quota status endpoint
+- [x] Add search result caching in DynamoDB
+- [x] Set up automatic quota reset at midnight PT
+- [x] Add error handling and logging
+
+##### Phase 3: Frontend Integration (3-4 hours) ✅
+- [x] Create SearchService class for API communication
+- [x] Replace URL input with search bar UI
+- [x] Add search results display component
+- [x] Implement quota status indicator
+- [x] Add fallback "Search on YouTube" button
+- [x] Cache recent searches in localStorage
+- [x] Add loading states and error handling
+
+**Rationale**: Eliminates friction of switching to YouTube to find videos. Automatic quota management ensures reliable service.
+
 ### P2 - Medium Priority
 
 #### **Features** - Loop Memory with Browser Storage (4-5 hours) ✅
@@ -68,6 +98,25 @@ Based on competitive analysis of 15+ YouTube looping tools, these 5 improvements
 - [x] Visual indicator showing preview mode is active
 - [x] Auto-exit preview mode when markers are confirmed
 - **Rationale**: Eliminates frustration of listening through entire loops to verify end points, making practice setup 5x faster.
+
+### P2.5 - Security & Production Fixes
+
+#### **Infrastructure** - Tighten CORS Policy for Production ⚠️
+
+- [ ] Replace wildcard (*) CORS origin with specific allowed domains in Lambda functions
+- [ ] Update Lambda functions to check origin header properly
+- [ ] Add environment-based CORS configuration
+- [ ] Test CORS with production domain
+- **Current State**: API Gateway has proper CORS, but Lambda functions still use `Access-Control-Allow-Origin: *`
+- **Risk**: Allows any website to call your API and use your quota
+- **Fix**: Update both Lambda functions to use specific origins:
+  ```javascript
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'https://www.songsnips.com',
+    'https://songsnips.com'
+  ];
+  ```
 
 ### P3 - Low Priority
 
