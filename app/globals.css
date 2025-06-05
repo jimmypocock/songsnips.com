@@ -180,7 +180,7 @@ body::before {
   pointer-events: none;
   opacity: 0.5;
   overflow: hidden;
-  /* animation: float 20s ease-in-out infinite; */
+  animation: float 20s ease-in-out infinite;
 }
 
 [data-theme="dark"] .gradient-orb {

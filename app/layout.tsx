@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     siteName: 'SongSnips',
     images: [
       {
-        url: '/images/og-image.png',
+        url: 'https://songsnips.com/images/og-image.png',
         width: 1200,
         height: 630,
         alt: 'SongSnips - Loop YouTube Videos for Practice',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SongSnips - YouTube Loop Practice Tool",
     description: "Master any song section with smart looping. Loop specific parts of YouTube videos for music practice, language learning, or any repetitive learning needs.",
-    images: ['/images/og-image.png'],
+    images: ['https://songsnips.com/images/og-image.png'],
   },
   robots: {
     index: true,
