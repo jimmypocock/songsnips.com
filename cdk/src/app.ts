@@ -85,6 +85,7 @@ monitoringStack.addDependency(cdnStack);
 // 7. App Stack - Application deployment
 const appStack = new AppStack(app, `${stackPrefix}-App`, {
   websiteBucketName: `${domainName}-app`,
+  cdnStackName: `${stackPrefix}-CDN`,
   env: usEast1Env,
   description: `Application deployment for ${appName}`,
 });

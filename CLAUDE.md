@@ -6,18 +6,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Running the application
 ```bash
-python3 -m http.server 8000
+npm run dev
 ```
-Then visit: http://localhost:8000/
+Then visit: http://localhost:3000/
 
-Note: The application requires being served over HTTP/HTTPS (not file://) due to YouTube API requirements.
+### Building for production
+```bash
+npm run build
+npm run export
+```
 
 ## Architecture
 
-This is a single-page web application for looping sections of YouTube videos, designed for music practice. The application consists of:
+This is a Next.js web application for looping sections of YouTube videos, designed for music practice. The application consists of:
 
-- **index.html**: Self-contained application with embedded CSS and JavaScript using YouTube IFrame API
-- **index_old.html, script_old.js, styles_old.css**: Previous version of the application (preserved for reference)
+- **app/**: Next.js app directory with pages and layouts
+- **components/**: React components including the main SongSnips player
+- **hooks/**: Custom React hooks for YouTube player functionality
 - **docs/**: Research documentation on alternative approaches and platform restrictions
 
 The application uses the YouTube IFrame Player API to provide video playback with custom section looping functionality. Key features include:

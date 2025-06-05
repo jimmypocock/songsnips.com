@@ -140,14 +140,18 @@ async function validateContext(): Promise<ValidationResult> {
 async function main() {
   console.log('🔍 Validating CDK Stacks...\n');
   
+  // Get stack prefix from environment or use default
+  const appName = process.env.APP_NAME || 'nextjs-app';
+  const stackPrefix = process.env.STACK_PREFIX || appName.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  
   const stacks = [
-    'VTT-Foundation',
-    'VTT-Certificate',
-    'VTT-EdgeFunctions',
-    'VTT-WAF',
-    'VTT-CDN',
-    'VTT-Monitoring',
-    'VTT-App'
+    `${stackPrefix}-Foundation`,
+    `${stackPrefix}-Certificate`,
+    `${stackPrefix}-EdgeFunctions`,
+    `${stackPrefix}-WAF`,
+    `${stackPrefix}-CDN`,
+    `${stackPrefix}-Monitoring`,
+    `${stackPrefix}-App`
   ];
   
   const results: ValidationResult[] = [];

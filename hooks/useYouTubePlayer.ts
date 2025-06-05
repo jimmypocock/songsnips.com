@@ -15,16 +15,25 @@ export function useYouTubePlayer() {
   const [loopPoints, setLoopPoints] = useState<LoopPoint>({ start: null, end: null });
   const [isLooping, setIsLooping] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   
   const updateIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const playerRef = useRef<any>(null);
+  const isLoopingRef = useRef(isLooping);
+  const loopPointsRef = useRef(loopPoints);
+  
+  // Update refs when state changes
+  useEffect(() => {
+    isLoopingRef.current = isLooping;
+  }, [isLooping]);
+  
+  useEffect(() => {
+    loopPointsRef.current = loopPoints;
+  }, [loopPoints]);
 
   // Handle player ready
   const handlePlayerReady = useCallback((playerInstance: any) => {
     setPlayer(playerInstance);
     playerRef.current = playerInstance;
-    setSuccess('Player ready! Paste a YouTube URL above to get started.');
     setError(null);
   }, []);
 
@@ -44,9 +53,9 @@ export function useYouTubePlayer() {
           const time = playerRef.current.getCurrentTime();
           setCurrentTime(time);
           
-          // Check if we need to loop
-          if (isLooping && loopPoints.end !== null && time >= loopPoints.end) {
-            playerRef.current.seekTo(loopPoints.start || 0);
+          // Check if we need to loop using refs to get current values
+          if (isLoopingRef.current && loopPointsRef.current.end !== null && time >= loopPointsRef.current.end) {
+            playerRef.current.seekTo(loopPointsRef.current.start || 0);
           }
         }
       }, 100);
@@ -57,11 +66,12 @@ export function useYouTubePlayer() {
         updateIntervalRef.current = null;
       }
     }
-  }, [isLooping, loopPoints]);
+  }, []);
 
   // Handle errors
   const handleError = useCallback((event: any) => {
     let errorMessage = 'Error loading video. ';
+    
     
     switch (event.data) {
       case 2:
@@ -77,12 +87,14 @@ export function useYouTubePlayer() {
       case 150:
         errorMessage += "The video owner doesn't allow embedded playback.";
         break;
+      case -1:
+        errorMessage = 'Failed to initialize player. Please refresh the page and try again.';
+        break;
       default:
         errorMessage += 'Please check the URL and try again.';
     }
     
     setError(errorMessage);
-    setSuccess(null);
   }, []);
 
   // Handle duration change
@@ -109,10 +121,12 @@ export function useYouTubePlayer() {
     player.pauseVideo();
     const seekTime = loopPoints.start !== null ? loopPoints.start : 0;
     player.seekTo(seekTime);
+    // Update currentTime immediately to reflect the UI change
+    setCurrentTime(seekTime);
   }, [player, loopPoints.start]);
 
   // Set loop point
-  const setLoopPoint = useCallback((type: 'start' | 'end', time: number) => {
+  const setLoopPoint = useCallback((type: 'start' | 'end', time: number, enablePreview: boolean = true) => {
     setLoopPoints(prev => {
       const newPoints = { ...prev };
       
@@ -124,6 +138,11 @@ export function useYouTubePlayer() {
         }
       } else {
         newPoints.end = time;
+        // When dragging end marker, seek to 3 seconds before to preview
+        if (enablePreview && player && player.seekTo) {
+          const previewStart = Math.max(0, time - 3);
+          player.seekTo(previewStart);
+        }
       }
       
       // Auto-enable looping when both points are set
@@ -133,7 +152,7 @@ export function useYouTubePlayer() {
       
       return newPoints;
     });
-  }, []);
+  }, [player]);
 
   // Clear loop
   const clearLoop = useCallback(() => {
@@ -141,23 +160,6 @@ export function useYouTubePlayer() {
     setIsLooping(false);
   }, []);
 
-  // Toggle loop
-  const toggleLoop = useCallback(() => {
-    if (loopPoints.start !== null && loopPoints.end !== null) {
-      setIsLooping(prev => !prev);
-      
-      // Jump to loop start when enabling
-      if (!isLooping && player) {
-        player.seekTo(loopPoints.start);
-      }
-      
-      setError(null);
-      return true;
-    } else {
-      setError('Please set both loop points first by clicking on the timeline');
-      return false;
-    }
-  }, [loopPoints, isLooping, player]);
 
   // Seek to position
   const seekTo = useCallback((time: number) => {
@@ -183,7 +185,6 @@ export function useYouTubePlayer() {
     loopPoints,
     isLooping,
     error,
-    success,
     handlePlayerReady,
     handleStateChange,
     handleError,
@@ -192,9 +193,7 @@ export function useYouTubePlayer() {
     stopPlayback,
     setLoopPoint,
     clearLoop,
-    toggleLoop,
     seekTo,
     setError,
-    setSuccess,
   };
 }

@@ -29,27 +29,31 @@
   --border-focus: #f77f00;
 
   /*
-   * RETRO COLOR PALETTE
-   * A vibrant retro-inspired color scheme
+   * MODERN COLOR PALETTE
+   * A clean, modern color scheme with navy blue primary
    *
-   * Primary: #f77f00 (Vibrant Orange) - Main brand color, energetic and warm
-   * Secondary: #012f49 (Deep Navy) - Professional depth and contrast
-   * Accent: #fcc04a (Golden Yellow) - Highlights and call-to-actions
-   * Danger: #d62729 (Deep Red) - Alerts and important actions
-   * Neutral: #e9e2b6 (Cream) - Soft backgrounds and subtle elements
+   * Primary: #012f49 (Deep Navy) - Main brand color, professional and modern
+   * Secondary: #f77f00 (Vibrant Orange) - Energy and call-to-actions
+   * Accent: #2196F3 (Bright Blue) - Interactive elements and highlights
+   * Danger: #ef4444 (Red) - Alerts and important actions
+   * Neutral: #6b7280 (Gray) - Text and borders
    */
 
   /* Brand colors */
-  --primary: #f77f00;      /* Vibrant Orange */
-  --primary-hover: #e06f00;
-  --secondary: #012f49;    /* Deep Navy */
-  --accent: #fcc04a;       /* Golden Yellow */
-  --danger: #d62729;       /* Deep Red */
+  --primary: #012f49;      /* Deep Navy */
+  --primary-hover: #023e5f;
+  --secondary: #2196F3;    /* Bright Blue - now secondary */
+  --secondary-hover: #1976D2;
+  --accent: #f77f00;       /* Vibrant Orange - now accent for small highlights */
+  --accent-hover: #e06f00;
+  --danger: #ef4444;       /* Red */
+  --danger-hover: #dc2626;
   --neutral: #6b7280;      /* Gray for text/borders */
+  --neutral-hover: #4b5563;
 
-  /* Gradient backgrounds - Retro warm tones */
-  --gradient-bg: radial-gradient(circle at 30% 20%, #fef6e8 0%, #fffbf3 40%, #ffffff 100%);
-  --orb-color: rgba(247, 127, 0, 0.3);
+  /* Gradient backgrounds - Modern clean tones */
+  --gradient-bg: linear-gradient(135deg, #f5f7fa 0%, #ffffff 50%, #f0f4f8 100%);
+  --orb-color: rgba(1, 47, 73, 0.15);
 
   /* Shadows - Softer for light mode */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
@@ -71,16 +75,20 @@
   --border-focus: #f77f00;
 
   /* Brand colors (adjusted for dark mode) */
-  --primary: #f77f00;      /* Vibrant Orange */
-  --primary-hover: #ff8c1a;
-  --secondary: #012f49;    /* Deep Navy */
-  --accent: #fcc04a;       /* Golden Yellow */
-  --danger: #d62729;       /* Deep Red */
+  --primary: #1e4a6d;      /* Lighter Navy for dark mode */
+  --primary-hover: #2a5a7f;
+  --secondary: #64b5f6;    /* Light Blue - now secondary */
+  --secondary-hover: #42a5f5;
+  --accent: #ff8c1a;       /* Brighter Orange - now accent for small highlights */
+  --accent-hover: #ffa033;
+  --danger: #f87171;       /* Light Red */
+  --danger-hover: #ef4444;
   --neutral: #94a3b8;      /* Lighter gray for dark mode */
+  --neutral-hover: #64748b;
 
-  /* Gradient backgrounds - Dark retro theme */
-  --gradient-bg: radial-gradient(circle at 20% 50%, #0f1922 0%, #0a0a0a 50%);
-  --orb-color: rgba(252, 192, 74, 0.4);
+  /* Gradient backgrounds - Modern dark theme */
+  --gradient-bg: linear-gradient(135deg, #0f0f17 0%, #0a0a0a 50%, #111118 100%);
+  --orb-color: rgba(33, 150, 243, 0.2);
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -167,67 +175,84 @@ body::before {
 .gradient-orb {
   position: fixed;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(100px);
   z-index: -1;
   pointer-events: none;
-  opacity: 0.3;
+  opacity: 0.5;
   overflow: hidden;
+  animation: float 20s ease-in-out infinite;
 }
 
 [data-theme="dark"] .gradient-orb {
-  opacity: 0.4;
+  opacity: 0.6;
+  filter: blur(120px);
 }
 
 .orb1 {
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
   top: -10%;
   right: -200px;
-  background: radial-gradient(circle at center, rgba(247, 127, 0, 0.5) 0%, rgba(252, 192, 74, 0.3) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(33, 150, 243, 0.6) 0%, rgba(25, 118, 210, 0.3) 40%, transparent 70%);
+  animation-delay: 0s;
 }
 
 [data-theme="dark"] .orb1 {
-  background: radial-gradient(circle at center, rgba(252, 192, 74, 0.6) 0%, rgba(247, 127, 0, 0.4) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(100, 181, 246, 0.7) 0%, rgba(66, 165, 245, 0.3) 40%, transparent 70%);
 }
 
 .orb2 {
-  width: 350px;
-  height: 350px;
+  width: 450px;
+  height: 450px;
   bottom: -10%;
   left: -10%;
-  background: radial-gradient(circle at center, rgba(214, 39, 41, 0.5) 0%, rgba(247, 127, 0, 0.3) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(25, 118, 210, 0.5) 0%, rgba(33, 150, 243, 0.3) 40%, transparent 70%);
+  animation-delay: 5s;
 }
 
 [data-theme="dark"] .orb2 {
-  background: radial-gradient(circle at center, rgba(214, 39, 41, 0.6) 0%, rgba(252, 192, 74, 0.4) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(66, 165, 245, 0.6) 0%, rgba(100, 181, 246, 0.3) 40%, transparent 70%);
 }
 
 .orb3 {
-  width: 300px;
-  height: 300px;
+  width: 400px;
+  height: 400px;
   top: 40%;
-  left: 60%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle at center, rgba(1, 47, 73, 0.8) 0%, rgba(1, 47, 73, 0.4) 40%, rgba(252, 192, 74, 0.2) 70%, transparent 80%);
-  animation-delay: -5s;
+  background: radial-gradient(circle at center, rgba(33, 150, 243, 0.5) 0%, rgba(13, 71, 161, 0.2) 40%, transparent 70%);
+  animation-delay: 10s;
 }
 
 [data-theme="dark"] .orb3 {
-  background: radial-gradient(circle at center, rgba(1, 47, 73, 0.9) 0%, rgba(1, 47, 73, 0.5) 40%, rgba(233, 226, 182, 0.3) 70%, transparent 80%);
+  background: radial-gradient(circle at center, rgba(30, 74, 109, 0.5) 0%, rgba(100, 181, 246, 0.3) 40%, transparent 70%);
 }
 
 /* Additional orb for more effect */
-.gradient-orb.orb4 {
-  width: 250px;
-  height: 250px;
+.orb4 {
+  width: 350px;
+  height: 350px;
   bottom: 20%;
   right: -50px;
-  background: radial-gradient(circle at center, rgba(233, 226, 182, 0.5) 0%, rgba(252, 192, 74, 0.3) 50%, transparent 70%);
-  animation-delay: -15s;
+  background: radial-gradient(circle at center, rgba(13, 71, 161, 0.6) 0%, rgba(33, 150, 243, 0.3) 40%, transparent 70%);
+  animation-delay: 15s;
 }
 
 [data-theme="dark"] .orb4 {
-  background: radial-gradient(circle at center, rgba(233, 226, 182, 0.6) 0%, rgba(247, 127, 0, 0.4) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(144, 202, 249, 0.5) 0%, rgba(66, 165, 245, 0.2) 40%, transparent 70%);
+}
+
+/* Floating animation for orbs */
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.05);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
 }
 
 /* Simple fade in animation for modal */
@@ -249,6 +274,57 @@ body::before {
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient 3s ease infinite;
+}
+
+/* Sparkle animation */
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+/* Bounce animation */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-bounce-slow {
+  animation: bounce 2s ease-in-out infinite;
+}
+
+/* Glow pulse */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(33, 150, 243, 0.5); }
+  50% { box-shadow: 0 0 40px rgba(33, 150, 243, 0.8); }
+}
+
+.animate-glow {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Shake animation for errors */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Slide in animation */
+@keyframes slide-in {
+  0% { transform: translateY(-20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
 }
 
 /* Custom scrollbar - style to match background */
@@ -313,12 +389,12 @@ textarea {
   @apply disabled:opacity-50 disabled:cursor-not-allowed;
   @apply min-h-[48px] min-w-[48px] text-base;
   background: var(--primary);
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 8px rgba(1, 47, 73, 0.2);
 }
 
 .btn-primary:hover:not(:disabled) {
   background: var(--primary-hover);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 12px rgba(1, 47, 73, 0.3);
   transform: translateY(-1px);
 }
 
@@ -407,10 +483,61 @@ textarea, input {
   border-width: 3px;
 }
 
+/* Touch-friendly timeline interactions */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Mobile-first utilities */
+@media (max-width: 640px) {
+  /* Ensure minimum touch target size */
+  button, .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Optimize tap targets with padding for thin handles */
+  .loop-handle {
+    /* Visual width is set in component, but add padding for touch */
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: -20px;
+    margin-right: -20px;
+    /* This gives a 44px touch target while keeping visual width small */
+  }
+}
+
+/* Better touch feedback */
+@media (hover: none) and (pointer: coarse) {
+  button:active,
+  .btn:active {
+    transform: scale(0.98);
+  }
+  
+  /* Disable hover effects on touch devices */
+  button:hover,
+  .btn:hover {
+    transform: none;
+  }
+}
+
 /* Better mobile responsiveness for timeline */
 @media (max-width: 640px) {
   .timeline-container {
-    height: 48px;
+    height: 40px;
+  }
+  
+  /* Sticky controls at bottom on mobile */
+  .mobile-controls {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    padding: 1rem;
   }
 }
 
@@ -437,23 +564,23 @@ textarea, input {
 }
 
 ::-webkit-scrollbar-track {
-  background: #fef6e8;
+  background: #f5f7fa;
   border-radius: 6px;
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-track {
-  background: #0f1922;
+  background: #0f0f17;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #fcc04a 0%, #f77f00 100%);
+  background: linear-gradient(180deg, #012f49 0%, #023e5f 100%);
   border-radius: 6px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #f77f00 0%, #d62729 100%);
+  background: linear-gradient(180deg, #023e5f 0%, #034a70 100%);
   background-clip: padding-box;
 }
 

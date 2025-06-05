@@ -5,7 +5,8 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import AdSenseScript from "@/components/AdSense/AdSenseScript";
 import GoogleCMP from "@/components/GoogleCMP";
 import GoogleConsentInit from "@/components/GoogleConsentInit";
-import ThemeToggle from "@/components/ThemeToggle";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // Configure Noto Sans for UI text with phonetic support
 const notoSans = Noto_Sans({
@@ -34,11 +35,22 @@ export const metadata: Metadata = {
     description: "Master any song section with smart looping. Loop specific parts of YouTube videos for music practice, language learning, or any repetitive learning needs.",
     type: "website",
     locale: "en_US",
+    url: 'https://songsnips.com',
+    siteName: 'SongSnips',
+    images: [
+      {
+        url: 'https://songsnips.com/images/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'SongSnips - Loop YouTube Videos for Practice',
+      }
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "SongSnips - YouTube Loop Practice Tool",
     description: "Master any song section with smart looping. Loop specific parts of YouTube videos for music practice, language learning, or any repetitive learning needs.",
+    images: ['https://songsnips.com/images/og-image.png'],
   },
   robots: {
     index: true,
@@ -102,8 +114,14 @@ export default function RootLayout({
           <div className="gradient-orb orb4" />
         </div>
         
-        <ThemeToggle />
-        {children}
+        <div className="min-h-screen flex flex-col">
+          <Header />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </div>
+        
         <GoogleCMP />
       </body>
     </html>

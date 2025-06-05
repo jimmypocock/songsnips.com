@@ -4,7 +4,7 @@
   "private": true,
   "description": "A production-ready Next.js template with AWS CDK, Google Analytics, Google AdSense, and Tailwind CSS",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -20,7 +20,6 @@
     "deploy:monitoring": "./scripts/deploy-monitoring.sh",
     "fix:bucket-policy": "./scripts/fix-bucket-policy.sh",
     "deploy:all": "./scripts/deploy-all-decoupled.sh --nextjs",
-    "deploy:all:decoupled": "./scripts/deploy-all-decoupled.sh --nextjs",
     "status": "./scripts/check-stack-status.sh",
     "status:all": "./scripts/check-all-stacks.sh",
     "destroy:waf": "./scripts/destroy-waf.sh",
