@@ -162,8 +162,8 @@ export default function UnifiedSearch({ onVideoSelect, onUrlSubmit }: UnifiedSea
               />
               <button
                 onClick={handleUrlSubmit}
-                disabled={!urlInput.trim()}
-                className="px-4 py-2 bg-gradient-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white font-medium rounded-md text-sm whitespace-nowrap transform hover:scale-105 transition-all duration-200 shadow-sm disabled:opacity-50"
+                disabled={!urlInput || !urlInput.trim()}
+                className="px-4 py-2 bg-gradient-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white font-medium rounded-md text-sm whitespace-nowrap transform hover:scale-105 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 Load ✨
               </button>
@@ -221,6 +221,13 @@ export default function UnifiedSearch({ onVideoSelect, onUrlSubmit }: UnifiedSea
           )}
         </div>
       </div>
+
+      {/* How to Help for URL Mode */}
+      {mode === 'url' && (
+        <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          <p>Paste a YouTube video URL (e.g., youtube.com/watch?v=... or youtu.be/...)</p>
+        </div>
+      )}
 
       {/* Quota Exceeded Message */}
       {mode === 'search' && hasApiUrl && quotaStatus?.quotaExceeded && (

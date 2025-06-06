@@ -155,6 +155,16 @@ export default function Timeline({
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
         </div>
 
+        {/* Loop start marker - shows even without end */}
+        {loopStart !== null && (
+          <div
+            className="loop-handle absolute inset-y-0 w-1 bg-gradient-to-b from-secondary via-secondary-hover to-secondary cursor-ew-resize hover:w-2 transition-all duration-200 z-[3] shadow-md"
+            style={{ left: `${loopStartPercent}%` }}
+            onMouseDown={(e) => handleDragStart(e, 'start')}
+            onTouchStart={(e) => handleTouchStart(e, 'start')}
+          />
+        )}
+
         {/* Loop region with visible overlay - using secondary color with gradient */}
         {loopStart !== null && loopEnd !== null && (
           <div
@@ -167,12 +177,6 @@ export default function Timeline({
             {/* Gradient fill */}
             <div className="absolute inset-0 bg-gradient-to-r from-secondary/20 via-secondary/30 to-secondary/20 dark:from-secondary/30 dark:via-secondary/40 dark:to-secondary/30" />
             
-            {/* Left border handle with gradient */}
-            <div
-              className="loop-handle absolute left-0 inset-y-0 w-1 bg-gradient-to-b from-secondary via-secondary-hover to-secondary cursor-ew-resize hover:w-2 transition-all duration-200 z-[3] shadow-md"
-              onMouseDown={(e) => handleDragStart(e, 'start')}
-              onTouchStart={(e) => handleTouchStart(e, 'start')}
-            />
             {/* Right border handle with gradient */}
             <div
               className="loop-handle absolute right-0 inset-y-0 w-1 bg-gradient-to-b from-secondary via-secondary-hover to-secondary cursor-ew-resize hover:w-2 transition-all duration-200 z-[3] shadow-md"

@@ -68,7 +68,7 @@ export default function SongSnips() {
         setError('Please enter a valid YouTube URL');
       }
     }
-  }, [videoUrl, currentVideoId, clearLoop, setError]);
+  }, [videoUrl, clearLoop, setError]);
 
   // Load from URL parameters on mount
   useEffect(() => {
@@ -158,7 +158,7 @@ export default function SongSnips() {
     
     // Cleanup
     return () => clearInterval(checkVideoReady);
-  }, [pendingLoopPoints, currentVideoId, setLoopPoint, seekTo]);
+  }, [pendingLoopPoints, currentVideoId, setLoopPoint, seekTo, duration, handleDurationChange]);
 
   // Load video from search result
   const handleVideoSelect = (videoId: string) => {
