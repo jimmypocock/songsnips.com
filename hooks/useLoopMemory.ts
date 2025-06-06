@@ -26,7 +26,8 @@ export function useLoopMemory(videoId: string | null) {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const memory: LoopMemory = JSON.parse(stored);
-        setSavedLoops(memory[videoId] || []);
+        const loops = memory[videoId] || [];
+        setSavedLoops(loops);
       }
     } catch (error) {
       console.error('Error loading saved loops:', error);

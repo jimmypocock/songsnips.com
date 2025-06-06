@@ -51,28 +51,41 @@ function getNextMidnightPT() {
   return midnight.toISOString();
 }
 
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:3737',
+  'https://www.songsnips.com',
+  'https://songsnips.com'
+];
+
+function getCorsHeaders(origin) {
+  // Check if the origin is allowed
+  const allowedOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  
+  return {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Credentials': 'true'
+  };
+}
+
 exports.handler = async (event) => {
   console.log('Event:', JSON.stringify(event, null, 2));
+
+  // Get the origin from the request headers
+  const origin = event.headers?.origin || event.headers?.Origin || '';
+  const headers = getCorsHeaders(origin);
 
   // Handle OPTIONS request for CORS preflight
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS'
-      },
+      headers,
       body: ''
     };
   }
-
-  const headers = {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS'
-  };
 
   try {
     const quotaStatus = await getQuotaStatus();

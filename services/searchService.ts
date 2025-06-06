@@ -58,7 +58,7 @@ export class SearchService {
     }
   }
   
-  async search(query: string, maxResults: number = 10): Promise<SearchResponse> {
+  async search(query: string, maxResults: number = 5): Promise<SearchResponse> {
     try {
       const params = new URLSearchParams({
         q: query,

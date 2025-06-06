@@ -75,7 +75,7 @@ async function checkAndUpdateQuota() {
   }
 }
 
-async function searchYouTube(query, maxResults = 10, type = 'video') {
+async function searchYouTube(query, maxResults = 5, type = 'video') {
   const apiKey = await getYouTubeApiKey();
   
   return new Promise((resolve, reject) => {
@@ -187,32 +187,45 @@ async function publishMetric(metricName, value) {
   }
 }
 
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:3737',
+  'https://www.songsnips.com',
+  'https://songsnips.com'
+];
+
+function getCorsHeaders(origin) {
+  // Check if the origin is allowed
+  const allowedOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  
+  return {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Credentials': 'true'
+  };
+}
+
 exports.handler = async (event) => {
   console.log('Event:', JSON.stringify(event, null, 2));
+
+  // Get the origin from the request headers
+  const origin = event.headers?.origin || event.headers?.Origin || '';
+  const headers = getCorsHeaders(origin);
 
   // Handle OPTIONS request for CORS preflight
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS'
-      },
+      headers,
       body: ''
     };
   }
 
-  const headers = {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS'
-  };
-
   try {
     const query = event.queryStringParameters?.q || event.q;
-    const maxResults = parseInt(event.queryStringParameters?.maxResults || event.maxResults || '10');
+    const maxResults = parseInt(event.queryStringParameters?.maxResults || event.maxResults || '5');
     const type = event.queryStringParameters?.type || event.type || 'video';
 
     if (!query) {
@@ -269,7 +282,7 @@ exports.handler = async (event) => {
         channelTitle: item.snippet.channelTitle,
         publishedAt: item.snippet.publishedAt
       })),
-      totalResults: searchResults.pageInfo.totalResults,
+      totalResults: searchResults.items.length,
       quotaInfo: {
         used: quotaData.used,
         limit: quotaData.limit,

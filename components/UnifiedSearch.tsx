@@ -108,6 +108,7 @@ export default function UnifiedSearch({ onVideoSelect, onUrlSubmit }: UnifiedSea
         alert('No YouTube URL found in clipboard');
       }
     } catch (err) {
+      console.error('Clipboard error:', err);
       alert('Please paste the YouTube URL manually');
     }
   };
@@ -242,7 +243,7 @@ export default function UnifiedSearch({ onVideoSelect, onUrlSubmit }: UnifiedSea
           <ol className="text-xs text-gray-600 dark:text-gray-400 space-y-1 ml-4">
             <li>1. Search for a video on YouTube</li>
             <li>2. Copy the video URL</li>
-            <li>3. Click "Quick Paste" to load it instantly</li>
+            <li>3. Click &quot;Quick Paste&quot; to load it instantly</li>
           </ol>
           <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
             Tip: The Quick Paste button automatically detects YouTube URLs from your clipboard!

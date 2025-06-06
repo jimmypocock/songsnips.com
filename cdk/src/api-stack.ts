@@ -102,7 +102,7 @@ export class ApiStack extends Stack {
         allowOrigins: [
           `https://${props.domainName}`,
           `https://www.${props.domainName}`,
-          'http://localhost:3000', // For local development
+          'http://localhost:3737', // For local development
         ],
         allowMethods: ['GET', 'OPTIONS'],
         allowHeaders: ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key'],

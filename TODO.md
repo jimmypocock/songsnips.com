@@ -33,6 +33,7 @@ Based on competitive analysis of 15+ YouTube looping tools, these 5 improvements
 
 ### P1 - High Priority
 
+- [ ] **[Add sitemap]**  `[TODO-001]`
 #### **Features** - Keyboard Shortcuts (2-3 hours) ✅
 
 - [x] Implement spacebar for play/pause
@@ -101,18 +102,18 @@ Based on competitive analysis of 15+ YouTube looping tools, these 5 improvements
 
 ### P2.5 - Security & Production Fixes
 
-#### **Infrastructure** - Tighten CORS Policy for Production ⚠️
+#### **Infrastructure** - Tighten CORS Policy for Production ✅
 
-- [ ] Replace wildcard (*) CORS origin with specific allowed domains in Lambda functions
-- [ ] Update Lambda functions to check origin header properly
-- [ ] Add environment-based CORS configuration
-- [ ] Test CORS with production domain
-- **Current State**: API Gateway has proper CORS, but Lambda functions still use `Access-Control-Allow-Origin: *`
-- **Risk**: Allows any website to call your API and use your quota
-- **Fix**: Update both Lambda functions to use specific origins:
+- [x] Replace wildcard (*) CORS origin with specific allowed domains in Lambda functions
+- [x] Update Lambda functions to check origin header properly
+- [x] Add environment-based CORS configuration
+- [x] Test CORS with production domain
+- **Current State**: API Gateway has proper CORS, and Lambda functions now validate origins
+- **Risk**: ~~Allows any website to call your API and use your quota~~ FIXED
+- **Fix**: ~~Update both Lambda functions to use specific origins~~ COMPLETED
   ```javascript
   const allowedOrigins = [
-    'http://localhost:3000',
+    'http://localhost:3737',
     'https://www.songsnips.com',
     'https://songsnips.com'
   ];

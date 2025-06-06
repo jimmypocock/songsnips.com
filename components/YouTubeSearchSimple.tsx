@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { SearchService } from '@/services/searchService';
 import type { SearchResponse, QuotaStatus } from '@/services/searchService';
 
@@ -19,12 +19,7 @@ export default function YouTubeSearch({ onVideoSelect, onQuotaStatusChange }: Yo
   const [error, setError] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
 
-  // Check quota on mount
-  useEffect(() => {
-    checkQuotaStatus();
-  }, []);
-
-  const checkQuotaStatus = async () => {
+  const checkQuotaStatus = useCallback(async () => {
     try {
       const status = await searchService.checkQuota();
       setQuotaStatus(status);
@@ -34,7 +29,12 @@ export default function YouTubeSearch({ onVideoSelect, onQuotaStatusChange }: Yo
     } catch (err) {
       console.error('Failed to check quota:', err);
     }
-  };
+  }, [onQuotaStatusChange]);
+
+  // Check quota on mount
+  useEffect(() => {
+    checkQuotaStatus();
+  }, [checkQuotaStatus]);
 
   const handleSearch = async () => {
     if (!query.trim()) return;

@@ -18,6 +18,8 @@ export default function YouTubeSearch({ onVideoSelect, onUrlSubmit }: YouTubeSea
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
+  const [mode, setMode] = useState<'search' | 'url'>('search');
+  const [urlInput, setUrlInput] = useState('');
 
   // Check quota on mount
   useEffect(() => {
@@ -104,9 +106,9 @@ export default function YouTubeSearch({ onVideoSelect, onUrlSubmit }: YouTubeSea
               <p className="font-medium text-blue-800 dark:text-blue-200 mb-1">Quick Search Workflow:</p>
               <ol className="text-xs text-blue-700 dark:text-blue-300 space-y-1 ml-4">
                 <li>1. Type your search query below</li>
-                <li>2. Click "YouTube →" to search on YouTube</li>
+                <li>2. Click &quot;YouTube →&quot; to search on YouTube</li>
                 <li>3. Copy the video URL from YouTube</li>
-                <li>4. Switch to "URL" mode and paste it</li>
+                <li>4. Switch to &quot;URL&quot; mode and paste it</li>
               </ol>
             </div>
             <button

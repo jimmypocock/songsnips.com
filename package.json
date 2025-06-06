@@ -4,7 +4,7 @@
   "private": true,
   "description": "A production-ready Next.js template with AWS CDK, Google Analytics, Google AdSense, and Tailwind CSS",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3737",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

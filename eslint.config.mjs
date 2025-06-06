@@ -13,6 +13,12 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     ignores: ["cdk/**/*", "cdk.out/**/*"]
+  },
+  {
+    files: ["components/SearchExample.tsx", "components/UnifiedSearch.tsx", "components/YouTubeSearch.tsx", "components/YouTubeSearchSimple.tsx"],
+    rules: {
+      "@next/next/no-img-element": "off"
+    }
   }
 ];
 

@@ -65,6 +65,12 @@ export function useYouTubePlayer() {
         clearInterval(updateIntervalRef.current);
         updateIntervalRef.current = null;
       }
+      
+      // Update current time once when paused
+      if (playerRef.current && playerRef.current.getCurrentTime) {
+        const time = playerRef.current.getCurrentTime();
+        setCurrentTime(time);
+      }
     }
   }, []);
 
@@ -110,9 +116,13 @@ export function useYouTubePlayer() {
     if (state === window.YT.PlayerState.PLAYING) {
       player.pauseVideo();
     } else {
+      // If we have a loop start and current time is before it, seek to loop start first
+      if (loopPoints.start !== null && player.getCurrentTime && player.getCurrentTime() < loopPoints.start) {
+        player.seekTo(loopPoints.start);
+      }
       player.playVideo();
     }
-  }, [player]);
+  }, [player, loopPoints.start]);
 
   // Stop playback
   const stopPlayback = useCallback(() => {
@@ -165,6 +175,8 @@ export function useYouTubePlayer() {
   const seekTo = useCallback((time: number) => {
     if (player && player.seekTo) {
       player.seekTo(time);
+      // Update current time immediately for UI feedback
+      setCurrentTime(time);
     }
   }, [player]);
 
