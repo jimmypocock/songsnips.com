@@ -44,6 +44,10 @@ cdk/*.d.ts
 cdk/*.js
 cdk/*.js.map
 
+# Lambda layers
+cdk/lambda-layers/dependencies/nodejs/node_modules/
+cdk/lambda-layers/dependencies/nodejs/package-lock.json
+
 # AWS
 .aws/
 

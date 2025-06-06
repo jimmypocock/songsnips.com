@@ -4,6 +4,13 @@
 # This script sets up stack names and other deployment variables
 # based on environment variables or defaults
 
+# Color codes for output
+export RED='\033[0;31m'
+export GREEN='\033[0;32m'
+export YELLOW='\033[1;33m'
+export BLUE='\033[0;34m'
+export NC='\033[0m' # No Color
+
 # Load environment variables from .env file if it exists
 if [ -f .env ]; then
     export $(cat .env | grep -v '^#' | xargs)
@@ -14,6 +21,11 @@ export APP_NAME=${APP_NAME:-"nextjs-app"}
 export DOMAIN_NAME=${DOMAIN_NAME:-"example.com"}
 export STACK_PREFIX=${STACK_PREFIX:-$(echo "$APP_NAME" | tr '[:lower:]' '[:upper:]' | sed 's/[^A-Z0-9]//g')}
 
+# Directory paths
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+export CDK_DIR="$PROJECT_ROOT/cdk"
+
 # Stack names based on the configured prefix
 export FOUNDATION_STACK="${STACK_PREFIX}-Foundation"
 export CERTIFICATE_STACK="${STACK_PREFIX}-Certificate"
@@ -22,6 +34,7 @@ export WAF_STACK="${STACK_PREFIX}-WAF"
 export CDN_STACK="${STACK_PREFIX}-CDN"
 export MONITORING_STACK="${STACK_PREFIX}-Monitoring"
 export APP_STACK="${STACK_PREFIX}-App"
+export API_STACK="${STACK_PREFIX}-API"
 
 # Legacy stack names for cleanup/migration
 export LEGACY_STACK="VocalTechniqueTranslatorStack"

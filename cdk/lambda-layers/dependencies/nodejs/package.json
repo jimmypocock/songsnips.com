@@ -1,0 +1,8 @@
+{
+  "name": "youtube-search-dependencies",
+  "version": "1.0.0",
+  "description": "Dependencies for YouTube search Lambda functions",
+  "dependencies": {
+    "aws-sdk": "^2.1528.0"
+  }
+}

@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev
 ```
-Then visit: http://localhost:3000/
+Then visit: http://localhost:3737/
 
 ### Building for production
 ```bash

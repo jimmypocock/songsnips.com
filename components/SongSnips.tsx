@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import YouTubePlayer, { type YouTubePlayerRef } from './YouTubePlayer';
 import Timeline from './Timeline';
 import ControlButtons from './ControlButtons';
@@ -10,6 +10,7 @@ import SpeedControl from './SpeedControl';
 import KeyboardShortcuts, { KeyboardShortcutsHelp } from './KeyboardShortcuts';
 import ShareLoop from './ShareLoop';
 import SavedLoops from './SavedLoops';
+import UnifiedSearch from './UnifiedSearch';
 import { useYouTubePlayer } from '@/hooks/useYouTubePlayer';
 import { useLoopMemory } from '@/hooks/useLoopMemory';
 
@@ -43,6 +44,32 @@ export default function SongSnips() {
   // Use loop memory hook
   const { savedLoops, saveLoop, deleteLoop, updateLoopName } = useLoopMemory(currentVideoId);
 
+  // Store URL parameters to load after player is ready
+  const [urlParams, setUrlParams] = useState<{videoId: string, start?: string, end?: string} | null>(null);
+
+  // Load video from URL
+  const handleLoadVideo = useCallback((url: string = videoUrl) => {
+    const urlToLoad = url || videoUrl;
+    if (!urlToLoad.trim()) {
+      setError('Please enter a YouTube URL');
+      return;
+    }
+
+    if (playerComponentRef.current) {
+      const videoId = playerComponentRef.current.loadVideo(urlToLoad);
+      if (videoId) {
+        clearLoop();
+        setError(null);
+        setCurrentVideoId(videoId);
+        // Don't clear videoUrl - we need it for sharing!
+        // Instead, store the loaded URL for sharing
+        setVideoUrl(urlToLoad);
+      } else {
+        setError('Please enter a valid YouTube URL');
+      }
+    }
+  }, [videoUrl, clearLoop, setError]);
+
   // Load from URL parameters on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -52,65 +79,94 @@ export default function SongSnips() {
       const endTime = params.get('end');
 
       if (videoId) {
-        const url = `https://youtube.com/watch?v=${videoId}`;
-        setVideoUrl(url);
-        setCurrentVideoId(videoId);
+        setUrlParams({ videoId, start: startTime || undefined, end: endTime || undefined });
+      }
+    }
+  }, []);
 
-        // Auto-load the video after a short delay
+  // Track when video is ready for URL params
+  const [pendingLoopPoints, setPendingLoopPoints] = useState<{start: number, end: number} | null>(null);
+
+  // Load video when player is ready and we have URL params
+  useEffect(() => {
+    if (urlParams && playerComponentRef.current) {
+      const url = `https://www.youtube.com/watch?v=${urlParams.videoId}`;
+      
+      // Use handleLoadVideo to properly load the video
+      handleLoadVideo(url);
+      
+      // Store loop points to set after video duration is available
+      if (urlParams.start && urlParams.end) {
+        setPendingLoopPoints({
+          start: parseFloat(urlParams.start),
+          end: parseFloat(urlParams.end)
+        });
+      }
+      
+      // Clear URL params to prevent re-loading
+      setUrlParams(null);
+    }
+  }, [urlParams, handleLoadVideo]);
+
+  // Set loop points once video is loaded
+  useEffect(() => {
+    if (!pendingLoopPoints || !currentVideoId) return;
+    
+    // Poll for video readiness instead of relying on duration
+    let attempts = 0;
+    const maxAttempts = 20; // 10 seconds max
+    
+    const checkVideoReady = setInterval(() => {
+      attempts++;
+      const player = playerComponentRef.current?.getPlayer();
+      
+      // Check if player is ready and has duration
+      if (player && player.getDuration && player.getDuration() > 0) {
+        clearInterval(checkVideoReady);
+        
+        // Update duration in the hook if needed
+        const videoDuration = player.getDuration();
+        if (duration === 0) {
+          handleDurationChange(videoDuration);
+        }
+        
+        // Set loop points
+        setLoopPoint('start', pendingLoopPoints.start);
+        setLoopPoint('end', pendingLoopPoints.end);
+        
+        // Play briefly then seek and pause
         setTimeout(() => {
-          if (playerComponentRef.current) {
-            const player = playerComponentRef.current.getPlayer();
-            if (player && player.loadVideoById) {
-              player.loadVideoById(videoId);
-
-              // Set loop points if provided
-              if (startTime && endTime) {
-                setTimeout(() => {
-                  setLoopPoint('start', parseFloat(startTime));
-                  setLoopPoint('end', parseFloat(endTime));
-                }, 1000);
-              }
-            }
-          }
-        }, 1000);
+          player.playVideo();
+          
+          setTimeout(() => {
+            player.seekTo(pendingLoopPoints.start);
+            seekTo(pendingLoopPoints.start);
+            
+            setTimeout(() => {
+              player.pauseVideo();
+            }, 100);
+          }, 300);
+        }, 100);
+        
+        // Clear pending points
+        setPendingLoopPoints(null);
+      } else if (attempts >= maxAttempts) {
+        clearInterval(checkVideoReady);
+        setPendingLoopPoints(null);
       }
-    }
-  }, [setLoopPoint]);
+    }, 500);
+    
+    // Cleanup
+    return () => clearInterval(checkVideoReady);
+  }, [pendingLoopPoints, currentVideoId, setLoopPoint, seekTo, duration, handleDurationChange]);
 
-
-  // Load video
-  const handleLoadVideo = () => {
-    if (!videoUrl.trim()) {
-      setError('Please enter a YouTube URL');
-      return;
-    }
-
-    if (playerComponentRef.current) {
-      const videoId = playerComponentRef.current.loadVideo(videoUrl);
-      if (videoId) {
-        clearLoop();
-        setError(null);
-        setCurrentVideoId(videoId);
-      } else {
-        setError('Please enter a valid YouTube URL');
-      }
-    }
+  // Load video from search result
+  const handleVideoSelect = (videoId: string) => {
+    const url = `https://www.youtube.com/watch?v=${videoId}`;
+    setVideoUrl(url);
+    handleLoadVideo(url);
   };
 
-  // Load test video
-  const handleLoadTestVideo = () => {
-    const testUrl = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
-    setVideoUrl(testUrl);
-
-    if (playerComponentRef.current) {
-      const videoId = playerComponentRef.current.loadVideo(testUrl);
-      if (videoId) {
-        clearLoop();
-        setError(null);
-        setCurrentVideoId(videoId);
-      }
-    }
-  };
 
   // Handle timeline click
   const handleTimelineClick = (time: number) => {
@@ -233,32 +289,11 @@ export default function SongSnips() {
         </div>
       )}
 
-      {/* Compact URL Input with Gradient Border */}
-      <div className="relative p-[2px] rounded-lg bg-gradient-to-r from-primary via-secondary to-secondary mb-2">
-        <div className="flex gap-2 bg-white dark:bg-gray-900 rounded-lg p-1">
-          <input
-            type="text"
-            value={videoUrl}
-            onChange={(e) => setVideoUrl(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleLoadVideo()}
-            placeholder="YouTube URL 🎶"
-            className="flex-1 px-3 py-2 rounded-md focus:outline-none bg-transparent text-sm placeholder-gray-400"
-          />
-          <button
-            onClick={handleLoadVideo}
-            className="px-4 py-2 bg-gradient-to-r from-primary to-primary-hover hover:from-primary-hover hover:to-primary text-white font-medium rounded-md text-sm whitespace-nowrap transform hover:scale-105 transition-all duration-200 shadow-sm"
-          >
-            Load ✨
-          </button>
-          <button
-            onClick={handleLoadTestVideo}
-            className="px-3 py-2 bg-gradient-to-r from-secondary/10 to-secondary/20 hover:from-secondary/20 hover:to-secondary/30 text-secondary dark:text-secondary font-medium text-sm rounded-md transform hover:scale-105 transition-all duration-200"
-            title="Load test video"
-          >
-            Test
-          </button>
-        </div>
-      </div>
+      {/* Unified Search - Handles both API and external search */}
+      <UnifiedSearch 
+        onVideoSelect={handleVideoSelect}
+        onUrlSubmit={handleLoadVideo}
+      />
 
       {/* Compact YouTube Player */}
       <div className="relative max-w-full">
