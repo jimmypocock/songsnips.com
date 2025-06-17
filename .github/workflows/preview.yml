@@ -1,4 +1,4 @@
-name: Preview Deploy
+name: PR Build & Test
 
 on:
   pull_request:
@@ -10,15 +10,13 @@ on:
       - 'LICENSE'
 
 concurrency:
-  group: preview-${{ github.head_ref }}
+  group: pr-${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:
-  preview:
-    name: Deploy Preview
+  test:
+    name: Build & Test
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -43,48 +41,3 @@ jobs:
 
       - name: Export static files
         run: npm run export
-
-      - name: Deploy to Vercel
-        id: deploy
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./
-          alias-domains: pr-{{PR_NUMBER}}.songsnips.vercel.app
-
-      - name: Comment PR with preview URL
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && 
-              comment.body.includes('Preview URL')
-            );
-            
-            const body = `🚀 **Preview Deployment Ready!**\n\n` +
-              `Preview URL: ${{ steps.deploy.outputs.preview-url }}\n\n` +
-              `This preview will be automatically updated on new commits.`;
-            
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body
-              });
-            }
