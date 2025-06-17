@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { describe, it, expect, beforeEach, vi, Mock } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import SongSnips from './SongSnips'
 import { mockYouTubePlayer, mockYouTubeAPI } from '../src/test/setup'
 
@@ -41,11 +41,10 @@ vi.mock('../hooks/useLoopMemory', () => ({
 }))
 
 // Create refs for components
-let mockPlayerRef: any = null
 
 // Mock child components with simpler implementations
-vi.mock('./YouTubePlayer', () => ({
-  default: React.forwardRef((props: any, ref: any) => {
+vi.mock('./YouTubePlayer', () => {
+  const MockYouTubePlayer = React.forwardRef<HTMLDivElement, { videoId?: string; onReady: () => void; onStateChange: () => void; onError: () => void }>((props, ref) => {
     React.useImperativeHandle(ref, () => ({
       loadVideo: vi.fn((url: string) => {
         const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/)
@@ -53,13 +52,14 @@ vi.mock('./YouTubePlayer', () => ({
       }),
       getPlayer: vi.fn(() => mockYouTubePlayer)
     }))
-    mockPlayerRef = ref
     return <div data-testid="youtube-player">YouTube Player</div>
   })
-}))
+  MockYouTubePlayer.displayName = 'MockYouTubePlayer'
+  return { default: MockYouTubePlayer }
+})
 
 vi.mock('./Timeline', () => ({
-  default: (props: any) => {
+  default: (props: { onTimelineClick: (time: number) => void; onLoopPointChange: (type: string, time: number, isDragging: boolean) => void }) => {
     const { onTimelineClick, onLoopPointChange } = props
     return (
       <div data-testid="timeline">
@@ -75,7 +75,7 @@ vi.mock('./Timeline', () => ({
 }))
 
 vi.mock('./ControlButtons', () => ({
-  default: (props: any) => {
+  default: (props: { onPlayPause: () => void; onStop: () => void; onClearLoop: () => void }) => {
     const { onPlayPause, onStop, onClearLoop } = props
     return (
       <div data-testid="control-buttons">
@@ -88,7 +88,7 @@ vi.mock('./ControlButtons', () => ({
 }))
 
 vi.mock('./UnifiedSearch', () => ({
-  default: (props: any) => {
+  default: (props: { onVideoSelect: (videoId: string) => void; onUrlSubmit: (url: string) => void }) => {
     const { onVideoSelect, onUrlSubmit } = props
     return (
       <div data-testid="unified-search">
@@ -118,7 +118,7 @@ vi.mock('./KeyboardShortcuts', () => ({
 }))
 
 vi.mock('./QuickLoopButtons', () => ({
-  default: (props: any) => {
+  default: (props: { onSetQuickLoop: (start: number, end: number) => void; currentTime: number }) => {
     const { onSetQuickLoop, currentTime } = props
     return (
       <div data-testid="quick-loop-buttons">
@@ -134,7 +134,7 @@ vi.mock('./QuickLoopButtons', () => ({
 }))
 
 vi.mock('./SpeedControl', () => ({
-  default: (props: any) => {
+  default: (props: { onSpeedChange: (speed: number) => void }) => {
     const { onSpeedChange } = props
     return (
       <div data-testid="speed-control">
@@ -153,7 +153,7 @@ vi.mock('./ShareLoop', () => ({
 }))
 
 vi.mock('./SavedLoops', () => ({
-  default: (props: any) => {
+  default: (props: { onSaveLoop: (start: number, end: number, name: string) => void; onLoadLoop: (loop: { start: number; end: number }) => void }) => {
     const { onSaveLoop, onLoadLoop } = props
     return (
       <div data-testid="saved-loops">
@@ -189,8 +189,11 @@ describe('SongSnips Integration', () => {
     })
 
     // Reset window.location.search
-    delete (window as any).location
-    window.location = { search: '' } as any
+    Object.defineProperty(window, 'location', {
+      value: { search: '' },
+      writable: true,
+      configurable: true
+    })
 
     // Set up window.YT
     window.YT = mockYouTubeAPI

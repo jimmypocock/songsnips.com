@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import YouTubePlayer, { YouTubePlayerRef } from './YouTubePlayer'
 import { mockYouTubePlayer, mockYouTubeAPI } from '../src/test/setup'
@@ -43,7 +43,7 @@ describe('YouTubePlayer', () => {
       writable: true,
       configurable: true
     })
-    window.onYouTubeIframeAPIReady = undefined as any
+    window.onYouTubeIframeAPIReady = undefined as unknown as () => void
     
     // Mock a desktop user agent by default
     mockUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
@@ -638,8 +638,8 @@ describe('YouTubePlayer', () => {
       })
       
       // Should only initialize once
-      const initLogs = (console.log as any).mock.calls.filter((call: any[]) => 
-        call[0]?.includes?.('[YouTube] Initializing player...')
+      const initLogs = (console.log as ReturnType<typeof vi.fn>).mock.calls.filter((call: unknown[]) => 
+        (call[0] as string)?.includes?.('[YouTube] Initializing player...')
       )
       expect(initLogs).toHaveLength(1)
     })

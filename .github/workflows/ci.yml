@@ -2,19 +2,19 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
     paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - '.gitignore'
-      - 'LICENSE'
+      - "**.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
   pull_request:
-    branches: [main, develop]
+    branches: [main]
     paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - '.gitignore'
-      - 'LICENSE'
+      - "**.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,8 +31,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Cache dependencies
         uses: actions/cache@v4
@@ -61,8 +61,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Cache dependencies
         uses: actions/cache@v4
@@ -102,8 +102,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Cache dependencies
         uses: actions/cache@v4
@@ -147,7 +147,7 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          wait-on: 'http://localhost:3737'
+          wait-on: "http://localhost:3737"
           wait-on-timeout: 120
           browser: chrome
           record: false
@@ -172,8 +172,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Cache dependencies
         uses: actions/cache@v4

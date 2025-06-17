@@ -1,5 +1,6 @@
 import { render, RenderOptions } from '@testing-library/react'
 import { ReactElement } from 'react'
+import { vi } from 'vitest'
 import { mockYouTubePlayer, mockYouTubeAPI } from './setup'
 
 // Custom render function that includes common providers
@@ -22,7 +23,7 @@ export const createMockYouTubeAPI = (overrides = {}) => ({
 })
 
 // Helper to simulate YouTube player events
-export const simulateYouTubeEvent = (eventType: string, data?: any) => {
+export const simulateYouTubeEvent = (eventType: string, data?: unknown) => {
   const event = { target: mockYouTubePlayer, data }
   mockYouTubePlayer.addEventListener.mock.calls.forEach(([type, callback]) => {
     if (type === eventType) {
@@ -88,7 +89,7 @@ export const createTouchEvent = (type: string, touches: Array<{ clientX: number;
       pageY: touch.clientY,
       screenX: touch.clientX,
       screenY: touch.clientY
-    })) as any,
+    })) as Touch[],
     bubbles: true
   })
 }
@@ -103,14 +104,14 @@ export const createMouseEvent = (type: string, coords: { clientX: number; client
 }
 
 // Helper to mock localStorage with specific data
-export const mockLocalStorageData = (data: Record<string, any>) => {
+export const mockLocalStorageData = (data: Record<string, unknown>) => {
   Object.keys(data).forEach(key => {
     localStorage.setItem(key, JSON.stringify(data[key]))
   })
 }
 
 // Helper to mock fetch responses
-export const mockFetchResponse = (data: any, status = 200) => {
+export const mockFetchResponse = (data: unknown, status = 200) => {
   const mockResponse = {
     ok: status >= 200 && status < 300,
     status,
@@ -123,7 +124,7 @@ export const mockFetchResponse = (data: any, status = 200) => {
 }
 
 // Helper to assert coverage of critical paths
-export const assertCriticalPath = (mockFn: any, expectedCalls: number) => {
+export const assertCriticalPath = (mockFn: jest.Mock | vi.Mock, expectedCalls: number) => {
   expect(mockFn).toHaveBeenCalledTimes(expectedCalls)
 }
 

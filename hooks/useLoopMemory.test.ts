@@ -139,7 +139,7 @@ describe('useLoopMemory', () => {
 
       expect(result.current.savedLoops).toEqual(existingData[testVideoId])
 
-      rerender({ videoId: null })
+      rerender({ videoId: '' })
 
       // When videoId becomes null, savedLoops keeps its previous value
       // because the useEffect early returns and doesn't update state
@@ -154,7 +154,7 @@ describe('useLoopMemory', () => {
       let savedLoopId: string | null = null
 
       act(() => {
-        savedLoopId = result.current.saveLoop(30, 60, 'Test Loop')
+        savedLoopId = result.current.saveLoop(30, 60, 'Test Loop') ?? ''
       })
 
       expect(typeof savedLoopId).toBe('string')

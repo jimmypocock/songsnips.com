@@ -170,7 +170,7 @@ describe('Search Functionality E2E Tests', () => {
       // Intercept search to add delay
       cy.intercept('GET', '**/api/search*', (req) => {
         req.reply((res) => {
-          res.delay(2000) // 2 second delay
+          res.delay = 2000 // 2 second delay
           res.send({
             items: [{
               videoId: 'test123',

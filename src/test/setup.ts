@@ -1,11 +1,13 @@
 import '@testing-library/jest-dom'
 import 'vitest-canvas-mock'
+import { vi } from 'vitest'
 
 // Mock YouTube API
 const mockYouTubePlayer = {
   loadVideoById: vi.fn(),
   playVideo: vi.fn(),
   pauseVideo: vi.fn(),
+  stopVideo: vi.fn(),
   seekTo: vi.fn(),
   getCurrentTime: vi.fn(() => 0),
   getDuration: vi.fn(() => 100),

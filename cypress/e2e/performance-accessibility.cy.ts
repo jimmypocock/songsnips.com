@@ -48,7 +48,14 @@ describe('Performance and Accessibility Tests', () => {
       cy.visit('/')
       
       // Create multiple saved loops in localStorage
-      const loops = []
+      const loops: Array<{
+        id: string
+        videoId: string
+        start: number
+        end: number
+        name: string
+        createdAt: string
+      }> = []
       for (let i = 0; i < 20; i++) {
         loops.push({
           id: `loop-${i}`,
@@ -286,7 +293,11 @@ describe('Performance and Accessibility Tests', () => {
       cy.visit('/', {
         onBeforeLoad(win) {
           // Simulate browser without certain APIs
-          delete win.localStorage
+          Object.defineProperty(win, 'localStorage', {
+            value: undefined,
+            writable: true,
+            configurable: true
+          })
         }
       })
 

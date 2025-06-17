@@ -76,6 +76,11 @@ Cypress.Commands.add('waitForSearchResults', () => {
     .should('have.length.at.least', 1)
 })
 
+// Custom command to tab through elements
+Cypress.Commands.add('tab', () => {
+  cy.focused().trigger('keydown', { keyCode: 9, which: 9, key: 'Tab' })
+})
+
 // Prevent Cypress from failing on uncaught exceptions from YouTube API
 Cypress.on('uncaught:exception', (err, runnable) => {
   // YouTube API sometimes throws errors that don't affect our tests
@@ -100,6 +105,7 @@ declare global {
       clearAllData(): Chainable<void>
       checkA11y(options?: any): Chainable<void>
       waitForSearchResults(): Chainable<void>
+      tab(): Chainable<void>
     }
   }
 }

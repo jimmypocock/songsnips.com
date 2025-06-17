@@ -16,15 +16,20 @@
     "deploy:api": "../scripts/deploy-api.sh",
     "deploy:api:only": "../scripts/api-commands.sh deploy",
     "diff:api": "../scripts/api-commands.sh diff",
-    "destroy:api": "../scripts/api-commands.sh destroy"
+    "destroy:api": "../scripts/api-commands.sh destroy",
+    "analyze-logs": "npx ts-node scripts/analyze-cloudfront-logs.ts"
   },
   "devDependencies": {
-    "@types/node": "20.11.5",
+    "@types/node": "^20.11.5",
     "aws-cdk": "^2.1016.1",
     "typescript": "~5.3.3"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.0.0",
     "aws-cdk-lib": "^2.198.0",
-    "constructs": "^10.0.0"
+    "aws-sdk": "^2.1692.0",
+    "commander": "^11.0.0",
+    "constructs": "^10.0.0",
+    "csv-parse": "^5.0.0"
   }
 }

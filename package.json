@@ -18,6 +18,7 @@
     "deploy:cdn": "./scripts/deploy-cdn.sh --nextjs",
     "deploy:app": "./scripts/deploy-app-content.sh",
     "deploy:monitoring": "./scripts/deploy-monitoring.sh",
+    "deploy:monitoring:enhanced": "cd cdk && npm run build && npx cdk deploy SONGSNIPS-Monitoring --parameters notificationEmail=${NOTIFICATION_EMAIL}",
     "deploy:api": "./scripts/deploy-api.sh",
     "deploy:api:only": "./scripts/api-commands.sh deploy",
     "diff:api": "./scripts/api-commands.sh diff",
