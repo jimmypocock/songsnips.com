@@ -46,7 +46,7 @@
     "test:e2e": "cypress run",
     "test:e2e:dev": "cypress open",
     "typecheck": "tsc --noEmit",
-    "export": "next build && next export -o out"
+    "export": "next build"
   },
   "dependencies": {
     "next": "^15.3.2",
