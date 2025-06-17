@@ -23,5 +23,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "cdk", "cdk/**/*"]
+  "exclude": ["node_modules", "cdk", "cdk/**/*", "**/*.test.ts", "**/*.test.tsx", "src/test/**/*", "cypress/**/*", "vitest.config.ts"]
 }

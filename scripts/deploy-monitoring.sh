@@ -4,6 +4,16 @@ set -e
 # Load configuration
 source "$(dirname "$0")/config.sh"
 
+# Load .env file if it exists
+if [ -f ".env" ]; then
+    export $(cat .env | grep -v '^#' | xargs)
+fi
+
+# Load .env.local file if it exists (overrides .env)
+if [ -f ".env.local" ]; then
+    export $(cat .env.local | grep -v '^#' | xargs)
+fi
+
 echo "📊 Deploying Monitoring Stack..."
 echo "📝 Stack name: $MONITORING_STACK"
 
@@ -13,8 +23,8 @@ if ! aws sts get-caller-identity &> /dev/null; then
     exit 1
 fi
 
-# Get notification email
-NOTIFICATION_EMAIL=""
+# Get notification email from env or command line
+NOTIFICATION_EMAIL="${NOTIFICATION_EMAIL:-}"
 for arg in "$@"; do
     if [[ $arg == -c ]] || [[ $arg == --context ]]; then
         NEXT_IS_CONTEXT=true
