@@ -3,6 +3,15 @@ name: Preview Deploy
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
+      - 'LICENSE'
+
+concurrency:
+  group: preview-${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
   preview:

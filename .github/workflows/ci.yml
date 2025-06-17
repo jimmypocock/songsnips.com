@@ -3,8 +3,22 @@ name: CI
 on:
   push:
     branches: [main, develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
+      - 'LICENSE'
   pull_request:
     branches: [main, develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
+      - 'LICENSE'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:
@@ -19,6 +33,14 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm ci
@@ -41,6 +63,14 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm ci
@@ -75,8 +105,26 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+            .next/standalone
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**.[jt]s', '**.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-
 
       - name: Build application
         run: npm run build
@@ -88,6 +136,14 @@ jobs:
           npm run dev &
           npx wait-on http://localhost:3737
 
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
+
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
@@ -96,6 +152,7 @@ jobs:
           browser: chrome
           record: false
           spec: cypress/e2e/songsnips-basic.cy.ts
+          install: false
 
       - name: Upload Cypress screenshots
         if: failure()
@@ -103,13 +160,6 @@ jobs:
         with:
           name: cypress-screenshots
           path: cypress/screenshots
-
-      - name: Upload Cypress videos
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-videos
-          path: cypress/videos
 
   build:
     name: Build
@@ -125,8 +175,26 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+            .next/standalone
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**.[jt]s', '**.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-
 
       - name: Build application
         run: npm run build
@@ -140,7 +208,7 @@ jobs:
           path: |
             .next/
             out/
-          retention-days: 7
+          retention-days: 1
 
   security:
     name: Security Scan
