@@ -4,9 +4,57 @@ describe('SongSnips Basic E2E Tests', () => {
 
   beforeEach(() => {
     cy.clearLocalStorage()
+    
+    // Mock YouTube API to avoid external dependencies
+    cy.window().then((win) => {
+      // Mock YouTube IFrame API
+      win.YT = {
+        Player: class MockPlayer {
+          constructor(elementId: string, config: any) {
+            // Create a mock iframe element
+            const container = win.document.getElementById(elementId)
+            if (container) {
+              const iframe = win.document.createElement('iframe')
+              iframe.src = 'about:blank'
+              iframe.width = '100%'
+              iframe.height = '100%'
+              container.appendChild(iframe)
+              
+              // Simulate YouTube player ready event
+              setTimeout(() => {
+                if (config.events?.onReady) {
+                  config.events.onReady({ target: this })
+                }
+              }, 100)
+            }
+          }
+          loadVideoById() { /* mock */ }
+          playVideo() { /* mock */ }
+          pauseVideo() { /* mock */ }
+          getCurrentTime() { return 0 }
+          getDuration() { return 240 } // 4 minutes
+          seekTo() { /* mock */ }
+          setPlaybackRate() { /* mock */ }
+          getPlayerState() { return 1 } // playing
+          stopVideo() { /* mock */ }
+        },
+        PlayerState: {
+          UNSTARTED: -1,
+          ENDED: 0,
+          PLAYING: 1,
+          PAUSED: 2,
+          BUFFERING: 3,
+          CUED: 5
+        },
+        ready: (callback: Function) => callback()
+      }
+      
+      // Mark API as loaded
+      win.document.head.setAttribute('data-yt-api-loaded', 'true')
+    })
+    
     cy.visit('/')
-    // Wait for the page to fully load
-    cy.wait(1000)
+    cy.wait(500) // Reduced wait time since we're mocking
   })
 
   describe('Video Loading', () => {

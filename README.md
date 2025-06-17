@@ -210,6 +210,47 @@ SongSnips/
 - **YouTube IFrame API** - Video playback
 - **React Hooks** - State management
 
+### Testing
+
+The project includes comprehensive test coverage:
+
+#### Unit Tests (Vitest)
+```bash
+# Run unit tests in watch mode
+npm run test
+
+# Run unit tests once
+npm run test:run
+
+# Run tests with coverage report
+npm run test:coverage
+
+# Open Vitest UI
+npm run test:ui
+```
+
+#### E2E Tests (Cypress)
+```bash
+# Run E2E tests (requires dev server running)
+npm run dev              # In terminal 1
+npm run test:e2e         # In terminal 2
+
+# Open Cypress UI for interactive testing
+npm run test:e2e:dev
+```
+
+#### Type Checking
+```bash
+# Run TypeScript type checking
+npm run typecheck
+
+# Run linting
+npm run lint
+```
+
+#### CI/CD Pipeline
+All unit tests, type checking, and linting run automatically on pull requests. E2E tests are configured for local development only.
+
 ### Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
