@@ -47,6 +47,12 @@ jobs:
       - name: Export static files
         run: npm run export
 
+      - name: Debug OIDC Claims
+        run: |
+          echo "GitHub Subject: repo:${{ github.repository }}:ref:${{ github.ref }}"
+          echo "Full ref: ${{ github.ref }}"
+          echo "Repository: ${{ github.repository }}"
+          
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:

@@ -40,9 +40,6 @@ export class SearchService {
   
   constructor() {
     this.apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-    if (!this.apiUrl) {
-      console.error('NEXT_PUBLIC_API_URL not configured. Please add it to your .env.local file.');
-    }
   }
   
   async checkQuota(): Promise<QuotaStatus> {
