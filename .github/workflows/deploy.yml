@@ -47,20 +47,6 @@ jobs:
       - name: Export static files
         run: npm run export
 
-      - name: Get OIDC Token for debugging
-        uses: actions/github-script@v7
-        id: get_token
-        with:
-          script: |
-            const token = await core.getIDToken()
-            // Decode the token (base64 decode the payload)
-            const parts = token.split('.')
-            const payload = Buffer.from(parts[1], 'base64').toString('utf-8')
-            const claims = JSON.parse(payload)
-            console.log('OIDC Token Claims:')
-            console.log(JSON.stringify(claims, null, 2))
-            console.log('\nSpecific subject claim:', claims.sub)
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
