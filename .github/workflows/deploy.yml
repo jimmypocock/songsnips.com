@@ -52,6 +52,11 @@ jobs:
           echo "GitHub Subject: repo:${{ github.repository }}:ref:${{ github.ref }}"
           echo "Full ref: ${{ github.ref }}"
           echo "Repository: ${{ github.repository }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Event name: ${{ github.event_name }}"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Run number: ${{ github.run_number }}"
           
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
