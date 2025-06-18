@@ -12,6 +12,7 @@ jobs:
   dependabot:
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
