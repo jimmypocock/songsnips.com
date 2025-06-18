@@ -1,13 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - "**.md"
-      - "docs/**"
-      - ".gitignore"
-      - "LICENSE"
   pull_request:
     branches: [main]
     paths-ignore:
@@ -83,7 +76,7 @@ jobs:
       - name: Upload coverage reports
         uses: codecov/codecov-action@v5
         with:
-          file: ./coverage/coverage-final.json
+          files: ./coverage/coverage-final.json
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
