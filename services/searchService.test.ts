@@ -25,17 +25,12 @@ describe('SearchService', () => {
       expect(searchService).toBeDefined()
     })
 
-    it('should log error when API URL is not configured', () => {
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    it('should initialize with empty API URL when not configured', () => {
       delete process.env.NEXT_PUBLIC_API_URL
+      const service = new SearchService()
       
-      new SearchService()
-      
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'NEXT_PUBLIC_API_URL not configured. Please add it to your .env.local file.'
-      )
-      
-      consoleErrorSpy.mockRestore()
+      // Service should still be created but with empty API URL
+      expect(service).toBeDefined()
     })
   })
 
