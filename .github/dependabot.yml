@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # Enable version updates for npm
+  # Enable version updates for npm (includes security updates)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -25,22 +25,6 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
-
-  # Enable security updates
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-      time: "04:00"
-    open-pull-requests-limit: 10
-    labels:
-      - "security"
-      - "dependencies"
-      - "automated"
-    assignees:
-      - "jimmypocock"
-    commit-message:
-      prefix: "security"
 
   # Keep GitHub Actions up to date
   - package-ecosystem: "github-actions"
