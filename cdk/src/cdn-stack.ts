@@ -104,7 +104,8 @@ export class CdnStack extends Stack {
       domainNames: props.certificate ? [`www.${props.domainName}`, props.domainName] : undefined,
       certificate: props.certificate,
       defaultRootObject: 'index.html',
-      webAclId: props.webAclArn,
+      // WAF integration removed - delete WAF stack in AWS Console
+      // webAclId: props.webAclArn,
       httpVersion: cloudfront.HttpVersion.HTTP2_AND_3,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       logBucket: logsBucket,
