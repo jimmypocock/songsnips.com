@@ -5,10 +5,10 @@ import { FoundationStack } from './foundation-stack';
 import { CertificateStack } from './certificate-stack';
 import { EdgeFunctionsStack } from './edge-functions-stack';
 import { CdnStack } from './cdn-stack';
-import { WafStack } from './waf-stack';
+// import { WafStack } from './waf-stack'; // WAF removed to reduce costs
 import { MonitoringStack } from './monitoring-stack';
 import { AppStack } from './app-stack';
-import { ApiStack } from './api-stack';
+// import { ApiStack } from './api-stack'; // API removed to reduce costs
 
 const app = new cdk.App();
 
@@ -50,10 +50,11 @@ const edgeFunctionsStack = new EdgeFunctionsStack(app, `${stackPrefix}-EdgeFunct
 });
 
 // 4. WAF Stack - Web Application Firewall
-const wafStack = new WafStack(app, `${stackPrefix}-WAF`, {
-  env: usEast1Env,
-  description: `WAF rules for ${appName}`,
-});
+// WAF stack removed to reduce costs
+// const wafStack = new WafStack(app, `${stackPrefix}-WAF`, {
+//   env: usEast1Env,
+//   description: `WAF rules for ${appName}`,
+// });
 
 // 5. CDN Stack - CloudFront distribution and deployment
 const cdnStack = new CdnStack(app, `${stackPrefix}-CDN`, {
@@ -61,7 +62,8 @@ const cdnStack = new CdnStack(app, `${stackPrefix}-CDN`, {
   certificate: certificateStack.certificate,
   redirectFunction: edgeFunctionsStack.redirectFunction,
   securityHeadersFunction: edgeFunctionsStack.securityHeadersFunction,
-  webAclArn: wafStack.webAcl.attrArn,
+  // WAF removed to reduce costs
+  // webAclArn: wafStack.webAcl.attrArn,
   env: usEast1Env,
   description: `CDN distribution for ${appName}`,
 });
@@ -70,7 +72,8 @@ const cdnStack = new CdnStack(app, `${stackPrefix}-CDN`, {
 cdnStack.addDependency(foundationStack);
 cdnStack.addDependency(certificateStack);
 cdnStack.addDependency(edgeFunctionsStack);
-cdnStack.addDependency(wafStack);
+// WAF dependency removed
+// cdnStack.addDependency(wafStack);
 
 // 6. Monitoring Stack - CloudWatch alarms and dashboards
 const monitoringStack = new MonitoringStack(app, `${stackPrefix}-Monitoring`, {
@@ -84,12 +87,13 @@ const monitoringStack = new MonitoringStack(app, `${stackPrefix}-Monitoring`, {
 monitoringStack.addDependency(cdnStack);
 
 // 7. API Stack - YouTube search API
-const apiStack = new ApiStack(app, `${stackPrefix}-API`, {
-  domainName: domainName,
-  alertEmail: notificationEmail,
-  env: usEast1Env,
-  description: `YouTube search API for ${appName}`,
-});
+// API stack removed to reduce costs
+// const apiStack = new ApiStack(app, `${stackPrefix}-API`, {
+//   domainName: domainName,
+//   alertEmail: notificationEmail,
+//   env: usEast1Env,
+//   description: `YouTube search API for ${appName}`,
+// });
 
 // 8. App Stack - Application deployment
 const appStack = new AppStack(app, `${stackPrefix}-App`, {
