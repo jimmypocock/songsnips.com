@@ -58,17 +58,17 @@ echo "3/6: Deploying Edge Functions Stack"
 echo "========================================="
 ./scripts/deploy-edge-functions.sh $ARGS
 
-# Deploy WAF
-echo ""
-echo "========================================="
-echo "4/6: Deploying WAF Stack"
-echo "========================================="
-./scripts/deploy-waf.sh $ARGS
+# Skip WAF deployment - removed to reduce costs
+# echo ""
+# echo "========================================="
+# echo "4/6: Deploying WAF Stack"
+# echo "========================================="
+# ./scripts/deploy-waf.sh $ARGS
 
 # Deploy CDN
 echo ""
 echo "========================================="
-echo "5/7: Deploying CDN Stack"
+echo "4/6: Deploying CDN Stack"
 echo "========================================="
 # Don't pass --nextjs again since we already built it
 ./scripts/deploy-cdn.sh ${ARGS//--nextjs/}
@@ -76,14 +76,14 @@ echo "========================================="
 # Deploy App Content
 echo ""
 echo "========================================="
-echo "6/7: Deploying Application Content"
+echo "5/6: Deploying Application Content"
 echo "========================================="
 ./scripts/deploy-app-content.sh $ARGS
 
 # Deploy Monitoring
 echo ""
 echo "========================================="
-echo "7/7: Deploying Monitoring Stack"
+echo "6/6: Deploying Monitoring Stack"
 echo "========================================="
 ./scripts/deploy-monitoring.sh $ARGS
 
@@ -96,8 +96,7 @@ echo "📋 Your infrastructure:"
 echo "   Foundation:     S3 buckets for content and logs"
 echo "   Certificate:    SSL/TLS certificate"
 echo "   Edge Functions: URL redirects and security headers"
-echo "   WAF:           Rate limiting and security rules"
-echo "   CDN:           CloudFront distribution"
+echo "   CDN:           CloudFront distribution (no WAF)"
 echo "   App:           Application content deployment"
 echo "   Monitoring:    CloudWatch dashboards and alerts"
 echo ""
